@@ -1,0 +1,352 @@
+[
+  {
+    "id": "absurd-301",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個身高一百八、會做飯、月薪十五萬、而且只喜歡我的人。",
+    "intensity": 2,
+    "tags": ["spec-sheet"],
+    "resolutions": {
+      "approve": "月老照辦了。對方的條件表比他長三倍，第一關就把他刷掉。",
+      "reject": "他自己刪掉了兩個條件，剩下的很快就遇到了。",
+      "transfer": "轉給人力銀行之神。那邊回：這是徵才，不是姻緣。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-302",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我想跟我家的掃地機器人結婚。它每天最準時回家。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "月老蓋章了。三個月後它壞了，他哭得比分手還慘。",
+      "reject": "他改買了第二台，說這樣比較公平。",
+      "transfer": "沒有神明管家電。保固卡歸原廠管。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-303",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個對象，但我不想跟他說話、不想見面、也不想他知道我是誰。",
+    "intensity": 2,
+    "tags": ["contradiction"],
+    "resolutions": {
+      "approve": "月老照字面辦了。她現在有一個完全不知情的對象，關係非常穩定。",
+      "reject": "月老退件。她自己也覺得有點誇張。",
+      "transfer": "所有神明都退回。這件事沒有部門。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-304",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我希望我暗戀的人跌倒的時候剛好被我扶到。就一次。",
+    "intensity": 1,
+    "tags": ["drama"],
+    "resolutions": {
+      "approve": "跌了。是他自己絆到，兩個人一起摔在地上。",
+      "reject": "沒人跌倒。這樣其實比較好。",
+      "transfer": "城隍爺說：故意害人跌倒是有罪的。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-305",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要跟我的貓永遠在一起。牠不用喜歡我，但不能喜歡別人。",
+    "intensity": 1,
+    "tags": ["cat"],
+    "resolutions": {
+      "approve": "貓照樣去蹭鄰居。技術上算失敗，但她沒發現。",
+      "reject": "貓當晚睡在她枕頭上。她說月老很懂。",
+      "transfer": "沒有神明管貓。貓自己管。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-306",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我可以許願讓我的前男友忘記我嗎？連我叫什麼都忘掉那種。",
+    "intensity": 3,
+    "tags": ["erase"],
+    "resolutions": {
+      "approve": "月老辦了。半年後他們在婚宴上重新認識，尷尬到極點。",
+      "reject": "他還記得。這件事讓她比她想的更難受，也更快好起來。",
+      "transfer": "城隍爺說：記憶不歸我管，那是另一個更高層的。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-307",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我想要一個能跟我媽吵贏的另一半。",
+    "intensity": 2,
+    "tags": ["family", "joke"],
+    "resolutions": {
+      "approve": "找到了。第一次見面就吵贏了，然後兩人變成好朋友，一起唸他。",
+      "reject": "沒人吵得贏。他媽依然是這個家的最終審。",
+      "transfer": "城隍爺表示：家務事他一向不介入。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-308",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我要我的紅線是防水的，因為我上次哭到把它弄濕了。",
+    "intensity": 1,
+    "tags": ["meta"],
+    "resolutions": {
+      "approve": "月老換了一條。她說手感確實比較好。",
+      "reject": "月老說紅線本來就不會濕。她說那她上次摸到的是什麼。",
+      "transfer": "轉給管材料的神明。那位神明表示沒有這個編制。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-309",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，可以讓我的另一半自帶冷氣嗎？我很怕熱。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "月老找了一個手腳冰冷的人。夏天很好用，冬天她後悔了。",
+      "reject": "她買了一台除濕機，效果差不多。",
+      "transfer": "沒有管冷氣的神明，只有管電費的財神。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-310",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我要一個不會問「你在想什麼」的人。",
+    "intensity": 2,
+    "tags": ["quiet"],
+    "resolutions": {
+      "approve": "找到了。對方從來不問。三個月後她開始希望有人問。",
+      "reject": "她遇到的人每天都問。她後來學會了怎麼回答。",
+      "transfer": "轉單被退回，備註：這其實是感情問題。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-311",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我可以先預約一個五年後才要交往的對象嗎？我現在很忙。",
+    "intensity": 2,
+    "tags": ["scheduling"],
+    "resolutions": {
+      "approve": "月老在系統裡排了五年後。時間到了，對方準時出現，他還沒準備好。",
+      "reject": "月老說不接預約。三年後他自己就遇到了。",
+      "transfer": "轉給訂位系統之神。那位表示這已經超出他的權限。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-312",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我要我的另一半是圖書館員，因為我喜歡安靜的人，而且我書很多。",
+    "intensity": 1,
+    "tags": ["specific"],
+    "resolutions": {
+      "approve": "真的是圖書館員。第一次約會就唸他書沒還。",
+      "reject": "他遇到的是書店店員。差不多，但更會推坑。",
+      "transfer": "文昌帝君說：藏書多可以來找我，姻緣不行。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-313",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個晚上會早睡的人。我受夠了對方凌晨三點傳訊息。",
+    "intensity": 1,
+    "tags": ["sleep"],
+    "resolutions": {
+      "approve": "找到了。對方九點就睡。她現在半夜沒人聊天。",
+      "reject": "沒換人。她改把手機轉靜音，問題解決一半。",
+      "transfer": "沒有管作息的神明。那是自律的範圍。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-314",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我想跟我的機車結婚，它陪我最久，而且從來不會突然說要冷靜一下。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "月老蓋章。隔年它被偷了，他傷心了半年。",
+      "reject": "他改去把它保養好，換了新的坐墊。",
+      "transfer": "轉給管交通的神明。那邊回：請他先繳罰單。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-315",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個會記得我所有紀念日的人，但我自己不想記。",
+    "intensity": 2,
+    "tags": ["double-standard"],
+    "resolutions": {
+      "approve": "找到了。對方記得每一個，也記得她從來不記。",
+      "reject": "沒有這種人。她買了一本行事曆。",
+      "transfer": "轉給文昌帝君，那邊回：記憶力可以訓練，來上課。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-316",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我要一個跟我一樣不想生小孩的人。這樣算不算為難你？",
+    "intensity": 2,
+    "tags": ["clear"],
+    "resolutions": {
+      "approve": "不為難。找到了，兩人第一次約會就把這件事講清楚了。",
+      "reject": "月老沒動。她自己在交友軟體上把這件事寫進自我介紹。效率更高。",
+      "transfer": "註生娘娘接到這單，笑著退回來。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-317",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個不會在社群上分享我們照片的人。",
+    "intensity": 1,
+    "tags": ["privacy"],
+    "resolutions": {
+      "approve": "找到了。對方連自己的照片都不發，關係低調到她朋友以為她單身。",
+      "reject": "對方照發不誤。她後來發現自己其實有點喜歡。",
+      "transfer": "沒有管社群的神明。演算法自己有神。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-318",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我可以把我的姻緣換成三年份的手搖飲嗎？",
+    "intensity": 1,
+    "tags": ["trade"],
+    "resolutions": {
+      "approve": "月老換了。第二年她就後悔了，但飲料真的很好喝。",
+      "reject": "月老不換。她買了一杯全糖，坐在廟口喝完。",
+      "transfer": "財神說這是交易，可以談，但價格要重估。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-319",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個會在我打呼的時候還覺得我可愛的人。",
+    "intensity": 1,
+    "tags": ["sweet"],
+    "resolutions": {
+      "approve": "找到了。對方打呼比她大聲，兩人扯平。",
+      "reject": "他先去看了睡眠門診。這其實比較實際。",
+      "transfer": "轉給該管的神明，那邊回：叫他側睡。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-320",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我要一個能接受我養七隻貓的人。已經七隻了，還會再多。",
+    "intensity": 2,
+    "tags": ["cat"],
+    "resolutions": {
+      "approve": "找到了。對方帶著兩隻搬進來，現在九隻。",
+      "reject": "沒找到。七隻貓表示這樣很好。",
+      "transfer": "沒有神明管貓。這件事前面說過了。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-321",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我想知道我到底是不是你們系統裡的漏單。",
+    "intensity": 3,
+    "tags": ["meta", "lonely"],
+    "resolutions": {
+      "approve": "月老查了。不是漏單，是排在很後面。他把單子往前挪了。",
+      "reject": "月老沒查。她問完自己笑了一下，說算了。",
+      "transfer": "轉給資訊部門。廟裡沒有資訊部門。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-322",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我要許三個願，可以嗎？我有帶三份供品。",
+    "intensity": 1,
+    "tags": ["bargain"],
+    "resolutions": {
+      "approve": "月老收了三份供品，辦了一個。他覺得很划算，其實不是。",
+      "reject": "月老退回兩份。他把多的分給了廟口的流浪狗。",
+      "transfer": "三個願分給三位神明。行政流程走了半年。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-323",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，你可不可以直接跟他說？我講不出口。",
+    "intensity": 2,
+    "tags": ["outsource"],
+    "resolutions": {
+      "approve": "月老託夢了。對方隔天問她：我昨天夢到一個老先生講你的事。",
+      "reject": "月老搖頭。有些話代講就不算數了。",
+      "transfer": "沒有神明幫人代講告白，這條規定寫在很前面。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-324",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "我要一個懂我梗的人。剛剛那個梗你也沒笑。",
+    "intensity": 1,
+    "tags": ["humour"],
+    "resolutions": {
+      "approve": "找到了。兩人的對話別人完全看不懂。",
+      "reject": "沒找到。他把梗改得比較好懂，朋友變多了。",
+      "transfer": "轉單失敗。其他神明的笑點更保守。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-325",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，你今天看起來很累。要不要我幫你上一炷香就好？",
+    "intensity": 1,
+    "tags": ["meta", "warm"],
+    "resolutions": {
+      "approve": "月老收下了。那炷香燒得特別久。",
+      "reject": "月老擺擺手，說輪不到你擔心。但他記住了這個人。",
+      "transfer": "轉不出去。這一單只有月老自己收得到。"
+    },
+    "source": "official"
+  }
+]

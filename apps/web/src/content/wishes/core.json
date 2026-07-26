@@ -1,0 +1,142 @@
+[
+  {
+    "id": "love-001",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老啊，我想跟隔壁桌那個穿藍衣服的講話，可是我不敢。",
+    "intensity": 1,
+    "tags": ["shy", "first-time"],
+    "resolutions": {
+      "approve": "三個月後，他們在便利商店門口撐同一把傘。",
+      "reject": "他把對話框關了，改去追劇。也還算過得去。",
+      "transfer": "被轉去文昌帝君那邊，結果考上了，但還是不敢講話。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-002",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "我跟他傳訊息已經三天了，他都只回「嗯」。月老，這是有機會還是沒有？",
+    "intensity": 2,
+    "tags": ["ambiguous"],
+    "resolutions": {
+      "approve": "第四天他突然打了兩百字。原來他在當兵。",
+      "reject": "你幫她看清了。她刪了對話，隔月換了工作，過得更好。",
+      "transfer": "城隍爺說這不算冤屈，只是不熟。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-003",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我不要姻緣了，我只要我前男友過得比我差一點點就好。",
+    "intensity": 3,
+    "tags": ["petty", "revenge-lite"],
+    "resolutions": {
+      "approve": "他手機掉進馬桶。她心情好了三天，然後覺得自己很幼稚。",
+      "reject": "她抱怨了一下，回家睡了一覺，隔天報名了陶藝課。",
+      "transfer": "城隍爺收下了，但備註寫著「小事」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-004",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我今年三十五了，家裡每年都問。我自己其實還好，但我想有人陪我吃火鍋。",
+    "intensity": 2,
+    "tags": ["family-pressure", "sincere"],
+    "resolutions": {
+      "approve": "冬天她排隊排到第七桌，旁邊那位也是一個人。兩人併桌。",
+      "reject": "她自己吃了一鍋，加了兩次麵。也挺好。",
+      "transfer": "註生娘娘表示這件事順序不對。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-005",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "我跟她認識十二年了。月老，我要不要說？",
+    "intensity": 3,
+    "tags": ["long-friendship", "heavy"],
+    "resolutions": {
+      "approve": "他說了。她說她等了六年。剩下六年他們吵到現在。",
+      "reject": "他沒說。兩人還是好朋友，各自結婚，婚禮都互相到場。",
+      "transfer": "沒有神明想接這一單。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "ticket-001",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "月老！拜託！下週演唱會售票，我要搖滾區，我求祢！",
+    "intensity": 2,
+    "tags": ["not-my-department"],
+    "resolutions": {
+      "approve": "月老硬接了。她搶到票，但旁邊坐的是她前男友。",
+      "reject": "她排到第 8,431 位。當晚在家看直播，哭得很開心。",
+      "transfer": "轉給售票系統之神。那位神明表示自己也在排隊。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "exam-001",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "月老，我要考國考，但我也想順便問一下我同組讀書的那個人。",
+    "intensity": 2,
+    "tags": ["two-in-one"],
+    "resolutions": {
+      "approve": "兩件都成了。他們現在在同一個機關上班，坐對面。",
+      "reject": "他落榜，也沒告白。隔年兩件都成了。",
+      "transfer": "文昌帝君只收考試那半，感情那半退回月老。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "money-001",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想脫單，但我更想先脫貧。",
+    "intensity": 1,
+    "tags": ["honest"],
+    "resolutions": {
+      "approve": "月老越權辦事，被財神在群組已讀不回三個月。",
+      "reject": "他自己加了班，年底升遷。也算解決一半。",
+      "transfer": "財神接單，附註「這位講話很實在」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-001",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要跟我的貓永遠在一起。牠不用喜歡我，但不能喜歡別人。",
+    "intensity": 1,
+    "tags": ["cat", "no-comment"],
+    "resolutions": {
+      "approve": "貓照樣去蹭鄰居。願望技術上算失敗，但她沒發現。",
+      "reject": "貓當晚睡在她枕頭上。她說月老很懂。",
+      "transfer": "沒有神明管貓。貓自己管。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-002",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個會自己洗碗、不會問我在幹嘛、假日願意分開行動的伴侶。身高不重要。",
+    "intensity": 2,
+    "tags": ["spec-sheet"],
+    "resolutions": {
+      "approve": "找到了。對方的條件表比他長兩倍。",
+      "reject": "他回家自己洗了碗，突然覺得沒那麼急。",
+      "transfer": "轉給人力銀行之神。那邊說這是徵才，不是姻緣。"
+    },
+    "source": "official"
+  }
+]

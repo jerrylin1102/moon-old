@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1784996047896,
+      "tag": "0000_loud_felicia_hardy",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785030009749,
+      "tag": "0001_add_accounts_and_community",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785030026079,
+      "tag": "0002_drop_legacy_scores",
+      "breakpoints": true
+    }
+  ]
+}

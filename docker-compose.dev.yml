@@ -1,0 +1,37 @@
+# 開發覆寫：vite HMR + tsx watch，原始碼用 bind mount 進容器
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  web:
+    build:
+      target: dev
+    ports:
+      - '5173:5173'
+    environment:
+      # 容器內要走服務名找 api，不是 localhost
+      VITE_API_TARGET: http://api:3000
+      # bind mount 的檔案變更需要輪詢才偵測得到
+      VITE_USE_POLLING: '1'
+    volumes:
+      - ./apps/web:/repo/apps/web
+      - ./packages/shared:/repo/packages/shared
+      # 保護容器內 hoist 出來的 node_modules，不要被 bind mount 蓋掉
+      - /repo/node_modules
+      - /repo/apps/web/node_modules
+
+  api:
+    build:
+      target: dev
+    environment:
+      NODE_ENV: development
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./apps/api:/repo/apps/api
+      - ./packages/shared:/repo/packages/shared
+      - /repo/node_modules
+      - /repo/apps/api/node_modules
+
+  db:
+    # 開發時直接對資料庫下手很方便
+    ports:
+      - '5432:5432'
