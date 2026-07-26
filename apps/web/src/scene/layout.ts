@@ -33,6 +33,9 @@ export const ALTAR_DEPTH = 1.5;
 
 /** 香爐：信眾第一站 */
 export const CENSER_POSITION = [0, 1.0, -1.2] as const;
+/** 香爐爐台的實際佔地（寬×深），跟 Temple.tsx 的爐台 boxGeometry 對齊，避免碰撞箱跟視覺對不上 */
+export const CENSER_FOOTPRINT_WIDTH = 2.4;
+export const CENSER_FOOTPRINT_DEPTH = 1.4;
 
 /** 柱子位置（左右各三根） */
 export const PILLAR_X = 5.8;

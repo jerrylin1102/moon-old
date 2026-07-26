@@ -1,7 +1,7 @@
 import type { GameState } from './state';
 import { addFatigue, isOverwhelmed } from './resources';
 import { updateSpawner, type SimDeps } from './spawner';
-import { isWaiting, updateWorshipper } from './worshipper';
+import { isWaiting, resolveWorshipperCollisions, updateWorshipper } from './worshipper';
 
 /** 固定步長。實際 dt 會被切成這個大小推進，避免不同螢幕刷新率跑出不同難度 */
 export const FIXED_STEP = 1 / 60;
@@ -30,6 +30,8 @@ function step(state: GameState, dt: number, deps: SimDeps | undefined): void {
     for (const w of state.worshippers) {
       updateWorshipper(state, w, dt, deps.intensityOf);
     }
+    // 走位算完之後才做人際碰撞，不然疊在一起的推擠會被下一步的走位覆蓋掉
+    resolveWorshipperCollisions(state);
     // 離場走完的人就從清單移除，順手把走道讓給下一位
     if (state.worshippers.some((w) => w.phase === 'gone')) {
       state.worshippers = state.worshippers.filter((w) => w.phase !== 'gone');

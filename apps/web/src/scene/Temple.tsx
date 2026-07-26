@@ -14,6 +14,8 @@ import {
   ALTAR_WIDTH,
   ALTAR_Z,
   censerStickSlot,
+  CENSER_FOOTPRINT_DEPTH,
+  CENSER_FOOTPRINT_WIDTH,
   CENSER_POSITION,
   DOOR_HEIGHT,
   DOOR_WIDTH,
@@ -342,7 +344,7 @@ function Censer({ m }: { m: TempleMaterials }) {
     <group position={[CENSER_POSITION[0], 0, CENSER_POSITION[2]]}>
       {/* 爐台 */}
       <mesh material={m.wood} position={[0, 0.45, 0]}>
-        <boxGeometry args={[2.4, 0.9, 1.4]} />
+        <boxGeometry args={[CENSER_FOOTPRINT_WIDTH, 0.9, CENSER_FOOTPRINT_DEPTH]} />
       </mesh>
       {/* 爐身 */}
       <mesh material={m.bronze} position={[0, 1.2, 0]}>

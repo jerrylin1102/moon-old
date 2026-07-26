@@ -1,4 +1,10 @@
-import { ALTAR_Z, CENSER_POSITION, DOOR_Z } from '../scene/layout';
+import {
+  ALTAR_Z,
+  CENSER_FOOTPRINT_DEPTH,
+  CENSER_FOOTPRINT_WIDTH,
+  CENSER_POSITION,
+  DOOR_Z,
+} from '../scene/layout';
 import { addFatigue, addIncense, addResentment } from './resources';
 import type { GameState, Worshipper, WorshipperPhase } from './state';
 
@@ -7,7 +13,11 @@ import type { GameState, Worshipper, WorshipperPhase } from './state';
  * 沒有 import three，所以模擬層拿來用不會破壞「sim 不碰渲染」的界線。
  */
 
-/** 一人一道，省掉互相避讓的邏輯。八道剛好鋪滿 15m 寬的廟 */
+/**
+ * 一人一道：走道本身互不相交，省掉走位時的避讓邏輯。八道剛好鋪滿 15m 寬的廟。
+ * 但跪拜區會收攏＋加隨機錯位，鄰道的人仍可能擠在一起，
+ * 那段身體重疊靠 resolveWorshipperCollisions 事後推開，不是靠走道分流。
+ */
 export const LANE_X = [-4.2, -3, -1.8, -0.6, 0.6, 1.8, 3, 4.2] as const;
 
 const BASE_WALK_SPEED = 1.15;
@@ -100,23 +110,70 @@ function targetFor(w: Worshipper): [number, number] | null {
   }
 }
 
-/** 香爐周圍的禁行帶：往神桌或往門口移動時，貼著中線走會直接穿過爐身 */
-const CENSER_AVOID_RADIUS = 0.95;
-const CENSER_AVOID_FRONT_Z = CENSER_POSITION[2] - 1.0;
-const CENSER_AVOID_BACK_Z = CENSER_POSITION[2] + 1.0;
+/** 信眾肩寬半徑，碰撞箱／人際避讓都用這個值撐出人的「體積」 */
+export const WORSHIPPER_RADIUS = 0.35;
+
+/**
+ * 香爐周圍的禁行帶：往神桌或往門口移動時，貼著中線走會直接穿過爐身。
+ * 半徑／深度直接從爐台實際佔地（CENSER_FOOTPRINT_*）推算，再加上人的肩寬，
+ * 這樣碰撞箱才會跟 Temple.tsx 畫出來的爐台對齊，不會出現「繞過的位置其實還在爐身裡」。
+ */
+const CENSER_AVOID_RADIUS = CENSER_FOOTPRINT_WIDTH / 2 + WORSHIPPER_RADIUS;
+const CENSER_AVOID_FRONT_Z = CENSER_POSITION[2] - (CENSER_FOOTPRINT_DEPTH / 2 + WORSHIPPER_RADIUS);
+const CENSER_AVOID_BACK_Z = CENSER_POSITION[2] + (CENSER_FOOTPRINT_DEPTH / 2 + WORSHIPPER_RADIUS);
 
 /**
  * 移動目標若會讓人貼著中線穿過香爐深度帶，先把方向煞成往旁邊閃，
  * 等橫向拉開到禁行半徑之外才放行繼續原本的路徑。
  * 只影響移動的「方向」，抵達判定仍然看真正的目的地，不會因為閃避點提早觸發下一階段。
+ *
+ * 閃避側用「自己走道」的正負號決定，不能用當下 px 的正負號——
+ * 人被 resolveWorshipperCollisions 擠到中線附近時 px 正負號會逐 frame翻來覆去，
+ * 若閃避側跟著翻，目標點就在 -RADIUS/+RADIUS 之間跳，畫面表現成貼著爐台邊緣狂閃。
+ * 走道位置整場固定，用它當側別就不會被推擠影響。
  */
 function avoidCenser(w: Worshipper, target: [number, number]): [number, number] {
   const [px, pz] = w.position;
   if (Math.abs(px) >= CENSER_AVOID_RADIUS) return target;
   if (pz < CENSER_AVOID_FRONT_Z || pz > CENSER_AVOID_BACK_Z) return target;
 
-  const side = px === 0 ? 1 : Math.sign(px);
+  const side = (LANE_X[w.lane] ?? 0) >= 0 ? 1 : -1;
   return [side * CENSER_AVOID_RADIUS, pz];
+}
+
+/** 兩個人中心距離小於這個值就算身體疊在一起 */
+const MIN_WORSHIPPER_DISTANCE = WORSHIPPER_RADIUS * 2;
+
+/**
+ * 人與人的碰撞箱：跪拜區收攏＋隨機錯位（見 targetFor 的 toAltar 分支）算下來，
+ * 相鄰走道的人有機率擠到彼此身體裡。每 tick 逐對檢查，疊在一起就各退一半，
+ * 只處理「已經重疊」的情況，不影響原本走位／站位的目標。
+ */
+export function resolveWorshipperCollisions(state: GameState): void {
+  const list = state.worshippers;
+  for (let i = 0; i < list.length; i++) {
+    const a = list[i];
+    if (!a || a.phase === 'gone') continue;
+    for (let j = i + 1; j < list.length; j++) {
+      const b = list[j];
+      if (!b || b.phase === 'gone') continue;
+
+      const dx = b.position[0] - a.position[0];
+      const dz = b.position[1] - a.position[1];
+      const dist = Math.hypot(dx, dz);
+      if (dist >= MIN_WORSHIPPER_DISTANCE) continue;
+
+      // 完全疊在同一點時方向不存在，用 seed 排出穩定的推開方向，不然除以 0 會炸開
+      const nx = dist < 1e-4 ? (a.seed >= b.seed ? 1 : -1) : dx / dist;
+      const nz = dist < 1e-4 ? 0 : dz / dist;
+      const push = (MIN_WORSHIPPER_DISTANCE - dist) / 2;
+
+      a.position[0] -= nx * push;
+      a.position[1] -= nz * push;
+      b.position[0] += nx * push;
+      b.position[1] += nz * push;
+    }
+  }
 }
 
 function enter(w: Worshipper, phase: WorshipperPhase): void {
