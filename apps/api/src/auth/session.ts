@@ -64,3 +64,43 @@ export async function currentUser(request: FastifyRequest): Promise<SessionUser 
 export function identityCode(id: string): string {
   return createHash('sha256').update(id).digest('hex').slice(0, 3);
 }
+
+/**
+ * 管理員 session。跟一般使用者 session 分開一支 cookie、分開簽發，
+ * 免得兩種身分的驗證邏輯混在一起——一般使用者不該因為拿到管理員 cookie 就變成管理員。
+ * 效期比一般 session 短很多：這是後台，不是給人長期掛著的。
+ */
+const ADMIN_COOKIE = 'moon_admin';
+const ADMIN_MAX_AGE_HOURS = 12;
+
+export async function issueAdminSession(reply: FastifyReply): Promise<void> {
+  const token = await new SignJWT({ admin: true })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime(`${ADMIN_MAX_AGE_HOURS}h`)
+    .sign(secret);
+
+  reply.setCookie(ADMIN_COOKIE, token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: ADMIN_MAX_AGE_HOURS * 60 * 60,
+  });
+}
+
+export function clearAdminSession(reply: FastifyReply): void {
+  reply.clearCookie(ADMIN_COOKIE, { path: '/' });
+}
+
+export async function isAdminAuthenticated(request: FastifyRequest): Promise<boolean> {
+  const token = request.cookies?.[ADMIN_COOKIE];
+  if (!token) return false;
+
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return payload.admin === true;
+  } catch {
+    return false;
+  }
+}

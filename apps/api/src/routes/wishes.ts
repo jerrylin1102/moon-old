@@ -158,8 +158,10 @@ export async function wishRoutes(app: FastifyInstance): Promise<void> {
   });
 
   /**
-   * 投稿。三層審核的前兩層在這裡跑，但無論結果如何都不會直接上線——
-   * status 只會是 pending 或 rejected，approved 只有人工能給。
+   * 投稿。預設不用人工審核就直接發佈——送出後立刻進入願望池，
+   * 別人下一場值班就可能遇到。程式規則仍然攔電話／email／個資這類硬傷，
+   * 命中就直接退件；LLM 預審繼續跑，但只寫進 auto_flags 供後台事後檢視，
+   * 不擋發佈。管理員在後台看得到所有投稿，需要的話可以事後下架。
    */
   app.post(
     '/api/wishes/submit',
@@ -233,14 +235,14 @@ export async function wishRoutes(app: FastifyInstance): Promise<void> {
         authorId: user.id,
         text,
         category,
-        status: 'pending',
+        status: 'approved',
         autoFlags: { rules, llm },
         ipHash: ipHash(request),
       });
 
-      return reply.code(202).send({
-        status: 'pending',
-        message: '收到了。願望會先由人工看過才會出現在廟裡。',
+      return reply.code(201).send({
+        status: 'approved',
+        message: '送出了！它現在就在廟裡，別人隨時可能遇到。',
       });
     },
   );

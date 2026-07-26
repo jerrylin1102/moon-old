@@ -43,7 +43,7 @@ export function SubmitWish({
     <div className="rounded-lg border border-incense/15 bg-black/40 p-4">
       <h3 className="font-serif text-lg tracking-widest text-temple-gold">投一則願望進廟裡</h3>
       <p className="mt-1 text-xs leading-relaxed text-incense/50">
-        寫下你想對月老說的話。通過人工審核後，別人值班時就會遇到這位信眾。
+        寫下你想對月老說的話。送出後立刻發佈，別人值班時就會遇到這位信眾。
         請不要寫真實姓名或聯絡方式。
       </p>
 

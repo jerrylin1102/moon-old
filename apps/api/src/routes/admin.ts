@@ -1,16 +1,19 @@
 import { timingSafeEqual } from 'node:crypto';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { and, desc, eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db, schema } from '../db/client';
-import { env } from '../env';
+import { adminEnabled, env } from '../env';
+import { clearAdminSession, isAdminAuthenticated, issueAdminSession } from '../auth/session';
 
 /**
- * 審核後台。三層審核的最後一層——只有這裡能把投稿改成 approved。
- * 沒設 ADMIN_TOKEN 就整組不掛載，避免不小心開了一個沒有保護的後台。
+ * 審核後台。標準帳號密碼登入，換一個 httpOnly session cookie——
+ * 不是貼權杖到輸入框那種。
+ * 沒同時設 ADMIN_USERNAME 與 ADMIN_PASSWORD 就整組不掛載，
+ * 避免不小心開了一個只驗一半的後台。
  */
 
-function tokenMatches(provided: string, expected: string): boolean {
+function safeEqual(provided: string, expected: string): boolean {
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
   // 長度不同時 timingSafeEqual 會丟例外，先擋掉
@@ -19,12 +22,15 @@ function tokenMatches(provided: string, expected: string): boolean {
 }
 
 async function requireAdmin(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-  const header = request.headers.authorization ?? '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : '';
-  if (!env.ADMIN_TOKEN || !tokenMatches(token, env.ADMIN_TOKEN)) {
-    await reply.code(401).send({ error: '需要管理者權杖' });
+  if (!(await isAdminAuthenticated(request))) {
+    await reply.code(401).send({ error: '請先登入管理後台' });
   }
 }
+
+const loginSchema = z.object({
+  username: z.string().min(1),
+  password: z.string().min(1),
+});
 
 const reviewSchema = z.object({
   id: z.string().uuid(),
@@ -40,137 +46,174 @@ const reviewSchema = z.object({
 });
 
 export async function adminRoutes(app: FastifyInstance): Promise<void> {
-  if (!env.ADMIN_TOKEN) {
-    app.log.warn('未設定 ADMIN_TOKEN，審核後台不啟用');
+  /** 前端用這支決定要顯示登入表單還是「這台沒開後台」 */
+  app.get('/admin/session', async (request) => ({
+    enabled: adminEnabled,
+    authenticated: adminEnabled && (await isAdminAuthenticated(request)),
+  }));
+
+  app.post(
+    '/admin/login',
+    { config: { rateLimit: { max: 10, timeWindow: '15 minutes' } } },
+    async (request, reply) => {
+      if (!adminEnabled || !env.ADMIN_USERNAME || !env.ADMIN_PASSWORD) {
+        return reply.code(503).send({ error: '這台沒有開放後台' });
+      }
+
+      const parsed = loginSchema.safeParse(request.body);
+      if (!parsed.success) return reply.code(400).send({ error: '請輸入帳號密碼' });
+
+      const { username, password } = parsed.data;
+      const ok =
+        safeEqual(username, env.ADMIN_USERNAME) && safeEqual(password, env.ADMIN_PASSWORD);
+
+      if (!ok) return reply.code(401).send({ error: '帳號或密碼錯誤' });
+
+      await issueAdminSession(reply);
+      return { ok: true };
+    },
+  );
+
+  app.post('/admin/logout', async (_request, reply) => {
+    clearAdminSession(reply);
+    return { ok: true };
+  });
+
+  if (!adminEnabled) {
+    app.log.warn('未設定 ADMIN_USERNAME / ADMIN_PASSWORD，審核後台不啟用');
     return;
   }
 
-  app.addHook('onRequest', requireAdmin);
+  // 以下路由都要先登入——用子作用域掛 hook，才不會連 /admin/login 都被自己擋住
+  await app.register(async (protectedApp) => {
+    protectedApp.addHook('onRequest', requireAdmin);
 
-  /** 待審清單，附上自動過濾的結果供參考 */
-  app.get('/admin/submissions', async (request, reply) => {
-    if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
+    /** 投稿清單。願望預設一投稿就直接發佈，這裡是給後台事後檢視、必要時下架用的 */
+    protectedApp.get('/admin/submissions', async (request, reply) => {
+      if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
 
-    const status = z
-      .enum(['pending', 'approved', 'rejected'])
-      .catch('pending')
-      .parse((request.query as { status?: string })?.status);
+      const statusParam = (request.query as { status?: string })?.status;
+      const status = z.enum(['pending', 'approved', 'rejected', 'all']).catch('all').parse(statusParam);
 
-    const rows = await db
-      .select()
-      .from(schema.submissions)
-      .where(eq(schema.submissions.status, status))
-      .orderBy(desc(schema.submissions.createdAt))
-      .limit(100);
+      const rows = await db
+        .select()
+        .from(schema.submissions)
+        .where(status === 'all' ? undefined : eq(schema.submissions.status, status))
+        .orderBy(desc(schema.submissions.createdAt))
+        .limit(200);
 
-    return { status, count: rows.length, submissions: rows };
-  });
+      return { status, count: rows.length, submissions: rows };
+    });
 
-  /** 檢舉清單。附上被檢舉內容與作者，方便判斷 */
-  app.get('/admin/reports', async (_request, reply) => {
-    if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
+    /** 檢舉清單。附上被檢舉內容與作者，方便判斷 */
+    protectedApp.get('/admin/reports', async (_request, reply) => {
+      if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
 
-    const rows = await db
-      .select({
-        id: schema.reports.id,
-        targetType: schema.reports.targetType,
-        targetId: schema.reports.targetId,
-        reason: schema.reports.reason,
-        createdAt: schema.reports.createdAt,
-        authorId: schema.reports.targetAuthorId,
-        authorName: schema.users.displayName,
-        authorBlocked: schema.users.blocked,
-      })
-      .from(schema.reports)
-      .innerJoin(schema.users, eq(schema.users.id, schema.reports.targetAuthorId))
-      .orderBy(desc(schema.reports.createdAt))
-      .limit(200);
+      const rows = await db
+        .select({
+          id: schema.reports.id,
+          targetType: schema.reports.targetType,
+          targetId: schema.reports.targetId,
+          reason: schema.reports.reason,
+          createdAt: schema.reports.createdAt,
+          authorId: schema.reports.targetAuthorId,
+          authorName: schema.users.displayName,
+          authorBlocked: schema.users.blocked,
+        })
+        .from(schema.reports)
+        .innerJoin(schema.users, eq(schema.users.id, schema.reports.targetAuthorId))
+        .orderBy(desc(schema.reports.createdAt))
+        .limit(200);
 
-    return { reports: rows };
-  });
+      return { reports: rows };
+    });
 
-  /** 封鎖清單，連同這個人送過的申訴一起顯示 */
-  app.get('/admin/blocked', async (_request, reply) => {
-    if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
+    /** 封鎖清單，連同這個人送過的申訴一起顯示 */
+    protectedApp.get('/admin/blocked', async (_request, reply) => {
+      if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
 
-    const users = await db
-      .select({
-        id: schema.users.id,
-        displayName: schema.users.displayName,
-        email: schema.users.email,
-        blockedAt: schema.users.blockedAt,
-        blockedReason: schema.users.blockedReason,
-      })
-      .from(schema.users)
-      .where(eq(schema.users.blocked, true))
-      .orderBy(desc(schema.users.blockedAt));
+      const users = await db
+        .select({
+          id: schema.users.id,
+          displayName: schema.users.displayName,
+          email: schema.users.email,
+          blockedAt: schema.users.blockedAt,
+          blockedReason: schema.users.blockedReason,
+        })
+        .from(schema.users)
+        .where(eq(schema.users.blocked, true))
+        .orderBy(desc(schema.users.blockedAt));
 
-    const appeals = await db
-      .select()
-      .from(schema.appeals)
-      .orderBy(desc(schema.appeals.createdAt))
-      .limit(200);
+      const appeals = await db
+        .select()
+        .from(schema.appeals)
+        .orderBy(desc(schema.appeals.createdAt))
+        .limit(200);
 
-    return {
-      users: users.map((u) => ({
-        ...u,
-        appeals: appeals.filter((a) => a.userId === u.id),
-      })),
-    };
-  });
+      return {
+        users: users.map((u) => ({
+          ...u,
+          appeals: appeals.filter((a) => a.userId === u.id),
+        })),
+      };
+    });
 
-  /** 手動解鎖。自動封鎖只能由人工解除，這是唯一的出口 */
-  app.post('/admin/unblock', async (request, reply) => {
-    if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
+    /** 手動解鎖。自動封鎖只能由人工解除，這是唯一的出口 */
+    protectedApp.post('/admin/unblock', async (request, reply) => {
+      if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
 
-    const parsed = z.object({ userId: z.string().uuid() }).safeParse(request.body);
-    if (!parsed.success) return reply.code(400).send({ error: '格式不對' });
+      const parsed = z.object({ userId: z.string().uuid() }).safeParse(request.body);
+      if (!parsed.success) return reply.code(400).send({ error: '格式不對' });
 
-    const [user] = await db
-      .update(schema.users)
-      .set({ blocked: false, blockedAt: null, blockedReason: null })
-      .where(eq(schema.users.id, parsed.data.userId))
-      .returning({ id: schema.users.id, displayName: schema.users.displayName });
+      const [user] = await db
+        .update(schema.users)
+        .set({ blocked: false, blockedAt: null, blockedReason: null })
+        .where(eq(schema.users.id, parsed.data.userId))
+        .returning({ id: schema.users.id, displayName: schema.users.displayName });
 
-    if (!user) return reply.code(404).send({ error: '找不到這個帳號' });
+      if (!user) return reply.code(404).send({ error: '找不到這個帳號' });
 
-    // 解鎖後把舊檢舉清掉，否則下一次被檢舉就會立刻又滿三次
-    await db.delete(schema.reports).where(eq(schema.reports.targetAuthorId, parsed.data.userId));
-    await db
-      .update(schema.appeals)
-      .set({ status: 'resolved' })
-      .where(eq(schema.appeals.userId, parsed.data.userId));
+      // 解鎖後把舊檢舉清掉，否則下一次被檢舉就會立刻又滿三次
+      await db.delete(schema.reports).where(eq(schema.reports.targetAuthorId, parsed.data.userId));
+      await db
+        .update(schema.appeals)
+        .set({ status: 'resolved' })
+        .where(eq(schema.appeals.userId, parsed.data.userId));
 
-    return { ok: true, user };
-  });
+      return { ok: true, user };
+    });
 
-  /** 核准或退件。只有這個端點能產生 approved */
-  app.post('/admin/review', async (request, reply) => {
-    if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
+    /**
+     * 核准或退件。願望預設一投稿就已經是 approved，
+     * 這支現在的角色是事後審核：可以把已發佈的內容下架，也可以反悔重新上架。
+     */
+    protectedApp.post('/admin/review', async (request, reply) => {
+      if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
 
-    const parsed = reviewSchema.safeParse(request.body);
-    if (!parsed.success) {
-      return reply
-        .code(400)
-        .send({ error: '格式不對', issues: parsed.error.issues.map((i) => i.message) });
-    }
+      const parsed = reviewSchema.safeParse(request.body);
+      if (!parsed.success) {
+        return reply
+          .code(400)
+          .send({ error: '格式不對', issues: parsed.error.issues.map((i) => i.message) });
+      }
 
-    const { id, decision, note, resolutions } = parsed.data;
-    const updated = await db
-      .update(schema.submissions)
-      .set({
-        status: decision,
-        moderationNote: note ?? null,
-        reviewedAt: new Date(),
-        ...(resolutions ? { resolutions } : {}),
-      })
-      .where(and(eq(schema.submissions.id, id), eq(schema.submissions.status, 'pending')))
-      .returning({ id: schema.submissions.id, status: schema.submissions.status });
+      const { id, decision, note, resolutions } = parsed.data;
+      const updated = await db
+        .update(schema.submissions)
+        .set({
+          status: decision,
+          moderationNote: note ?? null,
+          reviewedAt: new Date(),
+          ...(resolutions ? { resolutions } : {}),
+        })
+        .where(eq(schema.submissions.id, id))
+        .returning({ id: schema.submissions.id, status: schema.submissions.status });
 
-    if (updated.length === 0) {
-      return reply.code(404).send({ error: '找不到這筆待審投稿（可能已經審過了）' });
-    }
+      if (updated.length === 0) {
+        return reply.code(404).send({ error: '找不到這則投稿' });
+      }
 
-    return { ok: true, id, status: decision };
+      return { ok: true, id, status: decision };
+    });
   });
 }

@@ -1,4 +1,10 @@
+import { config } from 'dotenv';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import { z } from 'zod';
+
+// docker compose 由環境變數直接注入，不需要這步；本機 npm run dev 才需要讀 repo 根目錄的 .env
+config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../.env') });
 
 /**
  * 環境變數在啟動時一次驗證完。缺東西就直接開不起來，
@@ -15,7 +21,9 @@ const envSchema = z.object({
   OPENAI_MODEL: z.string().min(1).default('gpt-5.4-mini'),
   AI_DAILY_CAP: z.coerce.number().int().nonnegative().default(500),
 
-  ADMIN_TOKEN: z.string().min(1).optional(),
+  // 審核後台帳密。兩個都要設，缺一個就當作沒設——不要開一個只驗一半的後台
+  ADMIN_USERNAME: z.string().min(1).optional(),
+  ADMIN_PASSWORD: z.string().min(1).optional(),
   IP_HASH_SALT: z.string().min(1).default('dev-only-salt'),
 
   // 帳號：沒設 GOOGLE_CLIENT_ID 就是「這台不開放登入」，遊戲其餘功能照常
@@ -46,3 +54,4 @@ export const aiEnabled = Boolean(env.OPENAI_API_KEY);
 export const dbEnabled = Boolean(env.DATABASE_URL);
 export const authEnabled = Boolean(env.GOOGLE_CLIENT_ID);
 export const mailEnabled = Boolean(env.SMTP_HOST);
+export const adminEnabled = Boolean(env.ADMIN_USERNAME && env.ADMIN_PASSWORD);

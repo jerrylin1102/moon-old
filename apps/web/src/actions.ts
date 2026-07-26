@@ -13,6 +13,7 @@ import { isWaiting } from './sim/worshipper';
 import { onCooldown, startCooldown } from './sim/fatigue';
 import { eatOffering } from './sim/resources';
 import type { Worshipper } from './sim/state';
+import { sfxBlessing, sfxDivination, sfxOfferingEaten, sfxThreadTied, sfxVerdict } from './audio';
 
 /**
  * UI 與模擬層之間的橋。願望池是渲染層的資料，
@@ -47,6 +48,7 @@ export function applyVerdict(id: string | null, verdict: Verdict): boolean {
 
   resolveVerdict(state, w, verdict, wish);
   startCooldown(state);
+  sfxVerdict(verdict);
   useInteraction.getState().focus(null);
   useGame.getState().bump();
   return true;
@@ -58,6 +60,7 @@ export function applyEatOffering(offeringId: string): boolean {
   if (!state) return false;
 
   const ok = eatOffering(state, offeringId);
+  if (ok) sfxOfferingEaten();
   useGame.getState().bump();
   return ok;
 }
@@ -72,6 +75,7 @@ export function applyDivination(id: string | null, result: Divination): boolean 
 
   castDivination(state, w, result, wish);
   startCooldown(state);
+  sfxDivination(result);
   // 笑筊不算結案，信眾還在等，所以維持選中狀態
   if (result !== 'xiao') useInteraction.getState().focus(null);
   useGame.getState().bump();
@@ -83,6 +87,7 @@ export function applyBlessing(): boolean {
   if (!state) return false;
 
   const ok = castBlessing(state);
+  if (ok) sfxBlessing();
   useGame.getState().bump();
   return ok;
 }
@@ -100,7 +105,10 @@ export function applyThread(fromId: string, toId: string): boolean {
   const from: [number, number] = [...a.position];
   const to: [number, number] = [...b.position];
   const ok = tieRedThread(state, a, b, wishA, wishB);
-  if (ok) useInteraction.getState().addThread(from, to);
+  if (ok) {
+    useInteraction.getState().addThread(from, to);
+    sfxThreadTied();
+  }
 
   useInteraction.getState().focus(null);
   useGame.getState().bump();

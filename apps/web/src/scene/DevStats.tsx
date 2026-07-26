@@ -2,11 +2,18 @@ import { useEffect, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useDebug } from '../debug';
 import { useGame } from '../gameStore';
+import { getAudioContext } from '../audio/engine';
 
 declare global {
   interface Window {
-    /** dev 專用：讓自動化檢查能讀到場景、相機、renderer 與模擬狀態 */
-    __moon?: { camera: unknown; gl: unknown; scene: unknown; state: () => unknown };
+    /** dev 專用：讓自動化檢查能讀到場景、相機、renderer、模擬狀態與音效引擎 */
+    __moon?: {
+      camera: unknown;
+      gl: unknown;
+      scene: unknown;
+      state: () => unknown;
+      audioContextState: () => string | null;
+    };
   }
 }
 
@@ -19,7 +26,13 @@ export function DevStats() {
   const frames = useRef(0);
 
   useEffect(() => {
-    window.__moon = { camera, gl, scene, state: () => useGame.getState().state };
+    window.__moon = {
+      camera,
+      gl,
+      scene,
+      state: () => useGame.getState().state,
+      audioContextState: () => getAudioContext()?.state ?? null,
+    };
     // 後製每個 pass 都算一次 render，預設的 autoReset 會把計數清掉。
     // 關掉自動歸零、改成每帧自己 reset，統計才是「整帧總量」。
     gl.info.autoReset = false;

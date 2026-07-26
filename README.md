@@ -28,8 +28,8 @@
 
 **M6（後端）完成**：
 
-- **投稿與三層審核**：`POST /api/wishes/submit` → 程式規則（電話／email／網址／身分證／社群帳號／灌水一律自動退件；髒話只標記不退件，交給人工）→ LLM 預審（寫進 `auto_flags`，掛掉時記成 `null`＝未預審，不是乾淨）→ 一律存成 `pending`。
-  **只有 `POST /admin/review` 能產生 `approved`**，`GET /api/wishes/approved` 也只回 approved，未核准內容永遠不離開資料庫。
+- **投稿即發佈**：`POST /api/wishes/submit` → 程式規則（電話／email／網址／身分證／社群帳號／灌水一律自動退件；髒話只標記不退件）→ LLM 預審（寫進 `auto_flags`，掛掉時記成 `null`＝未預審，僅供後台參考，不擋發佈）→ 通過硬性規則就直接存成 `approved`，立刻出現在 `GET /api/wishes/approved`。
+  後台看得到所有投稿（含自動退件的），`POST /admin/review` 可以事後把已發佈的內容下架，或把退件的重新上架。
 - **排行榜**：`GET/POST /api/scores`，暱稱另外過濾（只擋廣告與辱罵，不套願望的長度規則）。
 - **AI 彩蛋**：`POST /api/blessing/rare` 代理 OpenAI。開機先驗證 `OPENAI_MODEL` 存在，
   三層限制（單 IP 每小時 5 次、全站每日上限、`max_completion_tokens`），生成結果再跑一次同一套過濾。
@@ -49,8 +49,8 @@ api 啟動時會自動跑 Drizzle migration（冪等，重開機安全）。改�
 npm run db:generate --workspace=@moon/api
 ```
 
-`/admin/*` 需要 `Authorization: Bearer $ADMIN_TOKEN`；沒設 `ADMIN_TOKEN` 整組後台不掛載，
-避免不小心開一個沒有保護的審核介面。
+`/admin` 是標準帳號密碼登入（`ADMIN_USERNAME` / `ADMIN_PASSWORD`），換一張獨立的 httpOnly session cookie，
+效期 12 小時。兩個環境變數缺一個，整組後台就不掛載。
 
 **M7.5（帳號、許願牆與社群互動）完成**：
 
@@ -59,7 +59,8 @@ npm run db:generate --workspace=@moon/api
   暱稱可以重複，排行榜用 `#a3f`（id 雜湊前三碼）區分。
 - **首頁三條路**：值班、我要許願（需登入）、值班排行（免登入）。右上角未登入是 Google 按鈕，登入後是頭像 → 設定（改暱稱、Email 通知開關、登出）。
 - **首次遊玩教學卡片**：四張，可略過；訪客記在本機，登入者記在 `users.intro_seen`。準備頁有「重看規則」。
-- **許願牆** `/wishes`：投稿（同時最多 50 則，收回就能再投）、每則願望的互動統計（誰擲了什麼筊、幾個人沒聽到）與留言。
+- **許願牆** `/wishes`：投稿即發佈（同時最多 50 則，收回就能再投）、每則願望的互動統計（誰擲了什麼筊、幾個人沒聽到）與留言。
+- **排行榜自動上榜**：值班結束就自動送出成績，不用手動按上傳；名字用帳號暱稱或訪客暱稱，兩者都在進遊戲前就已經問過了。
 - **留言**：值班中（會暫停模擬，不然打字期間別人的耐心照跑）與日終結算都能留。留言需登入，內容跑跟投稿同一套過濾。
 - **通知**：某則願望第一次被互動即時寄信，之後每天彙總一封；設定可關閉。
   沒設 `SMTP_HOST` 走 log transport，信會完整印在 log 裡但不真的寄。
@@ -67,7 +68,18 @@ npm run db:generate --workspace=@moon/api
   同一人重複檢舉只算一次。被封鎖者照常玩遊戲與上排行榜，但不能投稿、留言、檢舉，可在許願頁送申訴。
   後台 `/admin` 有待審投稿、檢舉清單、封鎖清單（含申訴）與手動解鎖；解鎖會清掉舊檢舉，避免一被檢舉就又滿三次。
 
-下一步是 M7（音效與音樂）、M8（模式 C）、M9（模式 B）。完整里程碑見 `~/.claude/plans/3d-indexed-harp.md`。
+**M7（音效與環境音）完成**：
+
+- **全部程序生成**（`apps/web/src/audio/`），零外部音檔、零授權風險：一個 AudioContext、一個總音量 GainNode，
+  所有聲音都是振盪器與濾波噪音即時合成。詳見 `assets/CREDITS.md`。
+- **具名音效**（`audio/sfx.ts`）：擲筊落地（聖／笑／陰筊音高節奏各不同）、批示結果（准／駁／轉單）、
+  顯靈神通（上行琶音）、牽紅線成功、偷吃供品。全部掛在 `actions.ts` 那幾個統一入口，玩家做什麼就聽到什麼。
+- **環境層**（`audio/ambience.ts`）：香爐嗡鳴 drone、隨機遠鐘／木魚、人在走動時偶爾聽到腳步，
+  疲勞噪音層平常幾乎聽不到、累了才慢慢浮出來——聽覺版的「疲勞讓你聽不清楚」。
+- HUD 有靜音切換，狀態存 localStorage。自動播放政策：AudioContext 在值班開始那次點擊裡建立並 resume，
+  另外掛一次性手勢監聽保底。
+
+下一步是 M8（模式 C）、M9（模式 B）。完整里程碑見 `~/.claude/plans/3d-indexed-harp.md`。
 
 效能現況（1280×720，dpr 2）：69–73 draw call、4.3k triangle、120fps；手機尺寸 61 call。
 draw call 預算是 100，其中約 8 個是後製 pass。柱子、香、信眾都走 `InstancedMesh`。

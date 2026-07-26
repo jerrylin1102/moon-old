@@ -58,8 +58,8 @@ export async function submitWish(text: string, category: string): Promise<Submit
     });
     const body = (await res.json().catch(() => ({}))) as { message?: string; issues?: string[] };
 
-    if (res.status === 202) {
-      return { ok: true, message: body.message ?? '收到了，會先由人工看過。' };
+    if (res.status === 201) {
+      return { ok: true, message: body.message ?? '送出了，已經在廟裡。' };
     }
     if (res.status === 429) {
       return { ok: false, message: '投稿太頻繁了，等一下再試。' };

@@ -63,7 +63,7 @@ export function WishesPage() {
 
         <h1 className="mt-4 font-serif text-3xl tracking-widest text-temple-gold">我的願望</h1>
         <p className="mt-2 text-xs leading-relaxed text-incense/45">
-          審核通過後，別人值班時就會遇到你的願望。他們擲了什麼筊、留了什麼話，都會回報到這裡。
+          送出後立刻就在廟裡，別人值班時隨時可能遇到。他們擲了什麼筊、留了什麼話，都會回報到這裡。
         </p>
 
         {me.blocked ? (

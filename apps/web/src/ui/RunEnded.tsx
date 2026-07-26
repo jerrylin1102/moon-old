@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGame } from '../gameStore';
 import { useInteraction } from '../interactionStore';
 import { useSession } from '../store';
@@ -20,14 +20,35 @@ export function RunEnded() {
   const endGame = useGame((s) => s.end);
   const { me, guest } = useAuth();
   const [saved, setSaved] = useState(false);
-  // 名字已經有了就直接帶入，不要再問一次
-  const [nickname, setNickname] = useState(me?.displayName ?? guest.nickname ?? '');
-  const [uploading, setUploading] = useState(false);
-  const [uploaded, setUploaded] = useState<boolean | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'done' | 'failed'>(
+    'idle',
+  );
+  const uploadedRef = useRef(false);
 
   const ended = !!state && state.status !== 'running';
   // 日記只在收班那一刻算一次，之後不要每次重繪都換一組留言
   const diary = useMemo(() => (ended && state ? buildDiary(state) : null), [ended, state?.status]);
+
+  // 收班就直接上榜，玩家不用手動按上傳——名字在進遊戲前就已經問過了
+  useEffect(() => {
+    if (!ended || !state || !diary || uploadedRef.current) return;
+    uploadedRef.current = true;
+    setUploadStatus('uploading');
+
+    void postScore({
+      nickname: me?.displayName ?? guest.nickname ?? '匿名香客',
+      mode,
+      difficulty,
+      score: computeScore(state),
+      wishesHandled: state.handled,
+      ignored: state.ignored,
+      matched: state.matched,
+      peakFatigue: Math.round(state.peakFatigue),
+      title: diary.title,
+      // 登入者的身分以 cookie 為準，這個只有訪客會用到
+      guestId: me ? undefined : guest.guestId,
+    }).then((ok) => setUploadStatus(ok ? 'done' : 'failed'));
+  }, [ended, state, diary, me, guest, mode, difficulty]);
 
   if (!state || !diary) return null;
   const score = computeScore(state);
@@ -40,27 +61,9 @@ export function RunEnded() {
   const again = () => {
     useInteraction.getState().reset();
     setSaved(false);
-    setUploaded(null);
+    setUploadStatus('idle');
+    uploadedRef.current = false;
     startGame(mode, difficulty);
-  };
-
-  const upload = async () => {
-    setUploading(true);
-    const ok = await postScore({
-      nickname: nickname.trim(),
-      mode,
-      difficulty,
-      score,
-      wishesHandled: state.handled,
-      ignored: state.ignored,
-      matched: state.matched,
-      peakFatigue: Math.round(state.peakFatigue),
-      title: diary.title,
-      // 登入者的身分以 cookie 為準，這個只有訪客會用到
-      guestId: me ? undefined : guest.guestId,
-    });
-    setUploaded(ok);
-    setUploading(false);
   };
 
   const back = () => {
@@ -142,31 +145,16 @@ export function RunEnded() {
           </ul>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-incense/10 pt-6">
-          <span className="text-[11px] tracking-widest text-incense/45">
-            上排行榜（{score} 分）
-          </span>
-          <input
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value.slice(0, 16))}
-            placeholder="留個名號"
-            disabled={uploaded !== null}
-            className="w-32 rounded-md border border-incense/20 bg-black/50 px-2 py-1.5 text-sm text-incense outline-none placeholder:text-incense/25 focus:border-temple-gold/50 disabled:opacity-50"
-          />
-          <button
-            type="button"
-            disabled={nickname.trim().length === 0 || uploading || uploaded !== null}
-            onClick={upload}
-            className="rounded-full border border-incense/30 px-4 py-1.5 text-xs text-incense/85 transition hover:border-incense/60 disabled:opacity-30"
-          >
-            {uploading ? '上傳中…' : uploaded === true ? '已上傳' : '上傳'}
-          </button>
-          {uploaded === false && (
-            <span className="text-[11px] text-[#d98a8a]">上傳失敗，可能是沒接後端或暱稱不能用。</span>
+        <div className="mt-8 flex items-center gap-2 border-t border-incense/10 pt-6 text-[11px] tracking-widest text-incense/45">
+          <span>{score} 分</span>
+          {uploadStatus === 'uploading' && <span className="text-incense/30">上榜中…</span>}
+          {uploadStatus === 'done' && <span className="text-[#9ac47f]">已上排行榜</span>}
+          {uploadStatus === 'failed' && (
+            <span className="text-incense/30">沒接後端，這場不會上排行榜</span>
           )}
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={again}

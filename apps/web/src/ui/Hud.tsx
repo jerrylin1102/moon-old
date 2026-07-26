@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useGame } from '../gameStore';
 import { useSession } from '../store';
 import { DIFFICULTY_PRESETS } from '../sim/state';
@@ -10,6 +11,7 @@ import { VerdictBar } from './VerdictBar';
 import { Outcomes } from './Outcomes';
 import { RunEnded } from './RunEnded';
 import { onCooldown } from '../sim/fatigue';
+import { isMuted, toggleMuted, useGameAudio } from '../audio';
 
 function Meter({
   label,
@@ -46,6 +48,8 @@ export function Hud() {
   const aiRareEnabled = useSession((s) => s.aiRareEnabled);
   useKeyboard(true);
   useRareWishes(aiRareEnabled);
+  useGameAudio();
+  const [muted, setMutedState] = useState(isMuted);
 
   if (!state) return null;
   const cap = DIFFICULTY_PRESETS[state.difficulty].resentmentCap;
@@ -79,6 +83,13 @@ export function Hud() {
             打烊倒數 {Math.floor(remaining / 60)}:{String(Math.floor(remaining % 60)).padStart(2, '0')}
           </span>
         )}
+        <button
+          type="button"
+          onClick={() => setMutedState(toggleMuted())}
+          className="rounded-full border border-incense/25 px-3 py-1.5 text-xs text-incense/70 transition hover:border-incense/50"
+        >
+          {muted ? '靜音中' : '有聲音'}
+        </button>
         <button
           type="button"
           onClick={leave}
