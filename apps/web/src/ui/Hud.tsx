@@ -13,6 +13,23 @@ import { RunEnded } from './RunEnded';
 import { onCooldown } from '../sim/fatigue';
 import { isMuted, toggleMuted, useGameAudio } from '../audio';
 
+/** 喇叭圖示：靜音時畫叉，有聲時畫音波弧線。純 SVG，不吃額外的圖示套件依賴 */
+function SpeakerIcon({ muted }: { muted: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" stroke="none" />
+      {muted ? (
+        <path d="M16 9l5 6M21 9l-5 6" />
+      ) : (
+        <>
+          <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+          <path d="M18.5 6a9 9 0 0 1 0 12" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 function Meter({
   label,
   value,
@@ -86,9 +103,11 @@ export function Hud() {
         <button
           type="button"
           onClick={() => setMutedState(toggleMuted())}
-          className="rounded-full border border-incense/25 px-3 py-1.5 text-xs text-incense/70 transition hover:border-incense/50"
+          aria-label={muted ? '取消靜音' : '靜音'}
+          title={muted ? '取消靜音' : '靜音'}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-incense/25 text-incense/70 transition hover:border-incense/50"
         >
-          {muted ? '靜音中' : '有聲音'}
+          <SpeakerIcon muted={muted} />
         </button>
         <button
           type="button"

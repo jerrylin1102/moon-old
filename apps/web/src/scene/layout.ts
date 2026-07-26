@@ -45,3 +45,28 @@ export const QUEUE_ANCHORS = {
   censer: [0, 0, CENSER_POSITION[2] - 1.4] as const,
   altar: [0, 0, ALTAR_Z - 1.8] as const,
 };
+
+/** 香爐裡第 index 支香（0-based）落在灰堆裡的位置與長短，跟總支數無關，只跟索引本身有關 */
+export interface CenserStickSlot {
+  x: number;
+  z: number;
+  h: number;
+  tilt: number;
+}
+
+/**
+ * 每一支插進香爐的香，最終落點都是這條公式算出來的固定值。
+ * Temple.tsx 的靜態香枝跟信眾上香時手上那支「正在飛過去」的香都要用同一條公式算，
+ * 兩邊才能在動畫結束的瞬間完全對上同一個位置／角度／長度，不會看起來像插完又蹦出另一支。
+ */
+export function censerStickSlot(index: number, total: number): CenserStickSlot {
+  const angle = (index / total) * Math.PI * 2 + index * 0.7;
+  const r = 0.16 + ((index * 37) % 5) * 0.1;
+  const h = 0.62 + ((index * 13) % 4) * 0.12;
+  return {
+    x: Math.cos(angle) * r,
+    z: Math.sin(angle) * r,
+    h,
+    tilt: (index % 2 === 0 ? 1 : -1) * 0.03,
+  };
+}

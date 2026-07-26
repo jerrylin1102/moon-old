@@ -9,6 +9,14 @@ import { LightShafts } from './LightShafts';
 import { Effects } from './Effects';
 import { DevStats } from './DevStats';
 import { SimLoop } from './SimLoop';
+import { useInteraction } from '../interactionStore';
+
+/** 點到廟裡沒人綁事件的地方（地板、牆、神桌…）：取消目前選中的信眾，順便把還沒放開的紅線收掉 */
+function deselect(): void {
+  const { focus, endThread } = useInteraction.getState();
+  focus(null);
+  endThread();
+}
 
 export function Stage() {
   return (
@@ -24,6 +32,7 @@ export function Stage() {
       onCreated={({ gl }) => {
         gl.toneMappingExposure = 1.08;
       }}
+      onPointerMissed={deselect}
       camera={{ fov: 62, near: 0.1, far: 70 }}
     >
       <color attach="background" args={['#1b0f10']} />

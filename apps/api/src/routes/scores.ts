@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { gameModeSchema, playSessionSchema } from '@moon/shared';
 import { db, schema } from '../db/client';
 import { ipHash } from '../ipHash';
@@ -8,29 +8,47 @@ import { currentUser, identityCode } from '../auth/session';
 
 export async function scoreRoutes(app: FastifyInstance): Promise<void> {
   /**
-   * 排行榜。暱稱可以重複，所以一律附上識別碼讓人分得出誰是誰。
+   * 排行榜。同一個人（帳號或訪客）不管玩了幾場，排行榜只留他最高分那一筆——
+   * 不然玩很多次的人會把整張榜洗成自己的紀錄。
+   * play_sessions 本身仍然是每場都插入一列，不能刪也不能改：
+   * /api/me/sessions 的個人遊玩紀錄需要完整歷史，排行榜只是額外用
+   * DISTINCT ON 從裡面挑出「每個人的最佳一場」，不動底層資料。
    */
   app.get('/api/scores', async (request, reply) => {
     if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
 
     const mode = gameModeSchema.catch('rush').parse((request.query as { mode?: string })?.mode);
 
+    // 分組鍵：登入用帳號 id，訪客用本機識別碼；兩者都沒有的異常情況退回自己的 row id，
+    // 不會被誤合併成同一組
+    const identity = sql<string>`coalesce(${schema.playSessions.userId}::text, ${schema.playSessions.guestHash}, ${schema.playSessions.id}::text)`;
+
+    const bestPerPlayer = db.$with('best_per_player').as(
+      db
+        .selectDistinctOn([identity], {
+          id: schema.playSessions.id,
+          userId: schema.playSessions.userId,
+          guestHash: schema.playSessions.guestHash,
+          nickname: schema.playSessions.nickname,
+          score: schema.playSessions.score,
+          wishesHandled: schema.playSessions.handled,
+          matched: schema.playSessions.matched,
+          peakFatigue: schema.playSessions.peakFatigue,
+          title: schema.playSessions.title,
+          createdAt: schema.playSessions.createdAt,
+        })
+        .from(schema.playSessions)
+        .where(eq(schema.playSessions.mode, mode))
+        // DISTINCT ON 要求 ORDER BY 開頭欄位跟它一致，同一組內再用分數高到低排，
+        // 就會挑出每個人分數最高的那一列
+        .orderBy(identity, desc(schema.playSessions.score)),
+    );
+
     const rows = await db
-      .select({
-        id: schema.playSessions.id,
-        userId: schema.playSessions.userId,
-        guestHash: schema.playSessions.guestHash,
-        nickname: schema.playSessions.nickname,
-        score: schema.playSessions.score,
-        wishesHandled: schema.playSessions.handled,
-        matched: schema.playSessions.matched,
-        peakFatigue: schema.playSessions.peakFatigue,
-        title: schema.playSessions.title,
-        createdAt: schema.playSessions.createdAt,
-      })
-      .from(schema.playSessions)
-      .where(eq(schema.playSessions.mode, mode))
-      .orderBy(desc(schema.playSessions.score))
+      .with(bestPerPlayer)
+      .select()
+      .from(bestPerPlayer)
+      .orderBy(desc(bestPerPlayer.score))
       .limit(20);
 
     return {

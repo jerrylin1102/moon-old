@@ -6,11 +6,14 @@ import { Smoke } from './Smoke';
 import { AshBed } from './AshBed';
 import { usePlaqueTexture } from './plaque';
 import { useDoorGlowTexture } from './textures';
+import { useGame } from '../gameStore';
+import { MAX_CENSER_STICKS } from '../sim/worshipper';
 import {
   ALTAR_DEPTH,
   ALTAR_HEIGHT,
   ALTAR_WIDTH,
   ALTAR_Z,
+  censerStickSlot,
   CENSER_POSITION,
   DOOR_HEIGHT,
   DOOR_WIDTH,
@@ -369,47 +372,66 @@ function Censer({ m }: { m: TempleMaterials }) {
 
 /**
  * 插在爐裡的香，頂端是燒紅的點。
- * 一樣走 instanced——M2 之後信眾每上一炷香就多一根，數量只會增加。
+ * 走 instanced 且數量隨信眾上香即時增加：每有人完成上香動作，
+ * state.censerSticks 就加一，這裡照數量把對應根數的香「變出來」（其餘縮到 0）。
  */
-const INCENSE_COUNT = 7;
-
 function IncenseSticks({ m }: { m: TempleMaterials }) {
   const sticks = useRef<InstancedMesh>(null);
   const embers = useRef<InstancedMesh>(null);
 
-  useLayoutEffect(() => {
-    const dummy = new Object3D();
-    for (let i = 0; i < INCENSE_COUNT; i++) {
-      const angle = (i / INCENSE_COUNT) * Math.PI * 2;
-      const r = 0.2 + (i % 3) * 0.12;
-      const h = 0.7 + (i % 4) * 0.12;
-      const x = Math.cos(angle) * r;
-      const z = Math.sin(angle) * r;
+  // 每一根香的擺放位置與長短固定用索引算出來（censerStickSlot），這樣新香出現時舊香不會跳位置，
+  // 且信眾上香時手上那支香飛過去的終點也是算同一條公式，兩邊在動畫結尾會完全對上
+  const slots = useMemo(
+    () => Array.from({ length: MAX_CENSER_STICKS }, (_, i) => censerStickSlot(i, MAX_CENSER_STICKS)),
+    [],
+  );
+
+  const dummy = useMemo(() => new Object3D(), []);
+
+  useFrame(() => {
+    const stickMesh = sticks.current;
+    const emberMesh = embers.current;
+    if (!stickMesh || !emberMesh) return;
+
+    const count = useGame.getState().state?.censerSticks ?? 0;
+
+    for (let i = 0; i < MAX_CENSER_STICKS; i++) {
+      const slot = slots[i];
+      if (i >= count || !slot) {
+        dummy.position.set(0, -10, 0);
+        dummy.scale.setScalar(0);
+        dummy.updateMatrix();
+        stickMesh.setMatrixAt(i, dummy.matrix);
+        emberMesh.setMatrixAt(i, dummy.matrix);
+        continue;
+      }
 
       // 香身的幾何體高度固定 1，用 scale 撐出長短不一
-      dummy.position.set(x, 1.5 + h / 2, z);
-      dummy.scale.set(1, h, 1);
-      dummy.rotation.set(0, 0, (i % 2 === 0 ? 1 : -1) * 0.03);
+      dummy.position.set(slot.x, 1.5 + slot.h / 2, slot.z);
+      dummy.scale.set(1, slot.h, 1);
+      dummy.rotation.set(0, 0, slot.tilt);
       dummy.updateMatrix();
-      sticks.current?.setMatrixAt(i, dummy.matrix);
+      stickMesh.setMatrixAt(i, dummy.matrix);
 
       dummy.scale.set(1, 1, 1);
       dummy.rotation.set(0, 0, 0);
-      dummy.position.set(x, 1.5 + h, z);
+      dummy.position.set(slot.x, 1.5 + slot.h, slot.z);
       dummy.updateMatrix();
-      embers.current?.setMatrixAt(i, dummy.matrix);
+      emberMesh.setMatrixAt(i, dummy.matrix);
     }
-    for (const ref of [sticks, embers]) {
-      if (ref.current) ref.current.instanceMatrix.needsUpdate = true;
-    }
-  }, []);
+
+    stickMesh.instanceMatrix.needsUpdate = true;
+    emberMesh.instanceMatrix.needsUpdate = true;
+    stickMesh.boundingSphere = null;
+    emberMesh.boundingSphere = null;
+  });
 
   return (
     <group>
-      <instancedMesh ref={sticks} material={m.wood} args={[undefined, undefined, INCENSE_COUNT]}>
+      <instancedMesh ref={sticks} material={m.wood} args={[undefined, undefined, MAX_CENSER_STICKS]}>
         <cylinderGeometry args={[0.012, 0.012, 1, 4]} />
       </instancedMesh>
-      <instancedMesh ref={embers} material={m.ember} args={[undefined, undefined, INCENSE_COUNT]}>
+      <instancedMesh ref={embers} material={m.ember} args={[undefined, undefined, MAX_CENSER_STICKS]}>
         <sphereGeometry args={[0.028, 6, 6]} />
       </instancedMesh>
     </group>

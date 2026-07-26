@@ -106,6 +106,8 @@ export interface GameState {
 
   /** 神桌上還沒被吃掉的供品 */
   offerings: Offering[];
+  /** 香爐裡插著的香數量，每次信眾上香就加一支，上限見 MAX_CENSER_STICKS */
+  censerSticks: number;
   /** 批示冷卻：疲勞越高，處理完一個願望後越久才動得了下一個 */
   cooldownUntil: number;
   /** 偷吃供品的次數，日終結算會拿來嘴你 */
@@ -161,6 +163,7 @@ export function createInitialState(mode: GameMode, difficulty: Difficulty): Game
     outcomes: [],
     nextOutcomeId: 1,
     offerings: [],
+    censerSticks: 3,
     cooldownUntil: 0,
     snacks: 0,
     peakFatigue: 0,

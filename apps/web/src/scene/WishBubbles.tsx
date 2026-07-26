@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import type { Group } from 'three';
 import { useGame } from '../gameStore';
+import { useInteraction } from '../interactionStore';
 import { findWish } from '../content/pool';
 import { DIFFICULTY_PRESETS } from '../sim/state';
 import { isWaiting } from '../sim/worshipper';
@@ -82,7 +83,11 @@ function Bubble({ id, wishId }: { id: string; wishId: string }) {
   return (
     <group ref={group}>
       <Html center distanceFactor={9} zIndexRange={[20, 0]}>
-        <div className="pointer-events-none w-52 rounded-lg border border-temple-gold/40 bg-black/75 px-3 py-2 text-center sm:w-64">
+        <div
+          className="w-52 cursor-pointer rounded-lg border border-temple-gold/40 bg-black/75 px-3 py-2 text-center transition hover:border-temple-gold/70 sm:w-64"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => useInteraction.getState().focus(id)}
+        >
           <p
             className="text-[12px] leading-snug text-incense sm:text-[13px]"
             style={{ filter: blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : undefined }}

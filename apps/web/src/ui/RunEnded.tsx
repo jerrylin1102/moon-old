@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGame } from '../gameStore';
 import { useInteraction } from '../interactionStore';
 import { useSession } from '../store';
@@ -18,6 +19,7 @@ export function RunEnded() {
   const setPhase = useSession((s) => s.setPhase);
   const startGame = useGame((s) => s.start);
   const endGame = useGame((s) => s.end);
+  const navigate = useNavigate();
   const { me, guest } = useAuth();
   const [saved, setSaved] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'done' | 'failed'>(
@@ -70,6 +72,7 @@ export function RunEnded() {
     useInteraction.getState().reset();
     endGame();
     setPhase('prepare');
+    navigate('/');
   };
 
   const share = () => {

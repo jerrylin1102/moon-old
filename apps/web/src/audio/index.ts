@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useGame } from '../gameStore';
 import { strain } from '../sim/fatigue';
 import { startAmbience, stopAmbience, updateAmbienceActivity, updateAmbienceFatigue } from './ambience';
+import { startBgm, stopBgm } from './bgm';
 
 export { getVolume, isMuted, setMuted, setVolume, toggleMuted } from './engine';
 export { sfxBlessing, sfxDivination, sfxOfferingEaten, sfxThreadTied, sfxVerdict } from './sfx';
@@ -18,7 +19,11 @@ function isWalkingPhase(phase: string): boolean {
 export function useGameAudio(): void {
   useEffect(() => {
     startAmbience();
-    return () => stopAmbience();
+    startBgm();
+    return () => {
+      stopAmbience();
+      stopBgm();
+    };
   }, []);
 
   useGame((s) => s.version);
