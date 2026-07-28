@@ -4,6 +4,7 @@ import { useGame } from '../gameStore';
 import { advance } from '../sim/tick';
 import type { SimDeps } from '../sim/spawner';
 import { findWish, intensityOf, pickWishId } from '../content/pool';
+import { pickStoryWishId } from '../content/story';
 import { reportInteraction } from '../api';
 import { useAuth } from '../authStore';
 import { useInteraction } from '../interactionStore';
@@ -14,8 +15,16 @@ export function SimLoop() {
   const uiAcc = useRef(0);
   /** 已經回報過的歷程長度。history 只會往後長，所以一個游標就夠 */
   const reported = useRef(0);
-  // 願望池是渲染層的資料，用 deps 注入模擬層，維持 sim 的純淨
-  const deps = useMemo<SimDeps>(() => ({ pickWishId, intensityOf }), []);
+  // 願望池是渲染層的資料，用 deps 注入模擬層，維持 sim 的純淨。
+  // 模式 B 的名單是值班開始時就排好的（見 story.ts），這裡只依當下模式決定要從哪個池子挑
+  const deps = useMemo<SimDeps>(
+    () => ({
+      pickWishId: () =>
+        useGame.getState().state?.mode === 'story' ? pickStoryWishId() : pickWishId(),
+      intensityOf,
+    }),
+    [],
+  );
 
   useFrame((_, dt) => {
     const { state, bump } = useGame.getState();

@@ -1,5 +1,6 @@
 import type { Difficulty } from '../store';
-import type { GameMode } from '@moon/shared';
+import type { GameMode, WishCategory } from '@moon/shared';
+import { buildMemoSchedule, initialRulebook, type RulebookMemo } from './rulebook';
 
 /**
  * 純模擬狀態：這個資料夾不 import three、也不 import react。
@@ -116,6 +117,22 @@ export interface GameState {
   peakFatigue: number;
   /** 當日處理歷程，日記從這裡長出來 */
   history: HandledRecord[];
+
+  /**
+   * 模式 C 用：業務範圍規則書，category → 目前是否算月老親自受理。
+   * 批示對錯永遠看願望自己的 domain，這張表只是玩家看得到的參考（見 sim/rulebook.ts）。
+   */
+  rulebook: Record<WishCategory, boolean>;
+  /** 還沒發出的公文，到了 elapsed 就套用並推播 */
+  pendingMemos: RulebookMemo[];
+  /** 已經發出的公文紀錄，UI 可以拿來顯示「最近更新」 */
+  rulebookLog: { at: number; text: string }[];
+
+  /**
+   * 模式 B 用：今天總共會有幾位信眾（5–8 人），0 表示不適用（rush／sorting）。
+   * 沒有時限，人數用完、在場的人都走完就打烊——判定邏輯見 tick.ts。
+   */
+  storyRosterToday: number;
 }
 
 export interface DifficultyPreset {
@@ -143,13 +160,14 @@ const DAY_LENGTH: Record<GameMode, number> = {
 
 export function createInitialState(mode: GameMode, difficulty: Difficulty): GameState {
   const preset = DIFFICULTY_PRESETS[difficulty];
+  const dayLength = DAY_LENGTH[mode];
   return {
     status: 'running',
     paused: false,
     mode,
     difficulty,
     elapsed: 0,
-    dayLength: DAY_LENGTH[mode],
+    dayLength,
     incense: preset.startingIncense,
     fatigue: 0,
     resentment: 0,
@@ -168,5 +186,10 @@ export function createInitialState(mode: GameMode, difficulty: Difficulty): Game
     snacks: 0,
     peakFatigue: 0,
     history: [],
+    rulebook: initialRulebook(),
+    pendingMemos: mode === 'sorting' ? buildMemoSchedule(dayLength) : [],
+    rulebookLog: [],
+    // 5–8 人，每次開新的一天都重擲一次，故事節奏才不會每天長度都一樣
+    storyRosterToday: mode === 'story' ? 5 + Math.floor(Math.random() * 4) : 0,
   };
 }

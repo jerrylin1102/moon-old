@@ -52,6 +52,35 @@ npm run db:generate --workspace=@moon/api
 `/admin` 是標準帳號密碼登入（`ADMIN_USERNAME` / `ADMIN_PASSWORD`），換一張獨立的 httpOnly session cookie，
 效期 12 小時。兩個環境變數缺一個，整組後台就不掛載。
 
+**M9（模式 B「凡人故事」）完成**：
+
+- **節奏**：一天固定 5–8 人（開局隨機擲），沒有打烊倒數——名額用完、在場的人都走完，這天才算收班
+  （`sim/spawner.ts` 的 `MODE_TEMPO.story`、`sim/tick.ts` 新增的收班判斷）。
+- **多段對話**：故事願望的 `text` 用 `\n`分段，願望氣泡與批示條都改用 `whitespace-pre-line` 呈現；
+  疲勞遮字的 `muffle()` 保留換行不遮，模糊再重也看得出對話的段落。氣泡在這個模式也放寬了一點（`w-64`/`w-80`）。
+- **獨立願望池** `content/wishes/story.json`（13 則，5 條兩天式故事線 + 3 則單日故事）：
+  跟 `officialPool` 分開存放，不會混進 rush／sorting 的隨機池，也不受一般願望池「氣泡塞得下」
+  （60 字）的長度測試限制——`storyPool` 另外有自己的測試。
+- **跨天回訪與存檔**（`content/story.ts`）：收班時把「有回應、而且有 `followUp`」的願望排進明天的回訪佇列，
+  存進 `localStorage`（`moon.story`）；下次開局優先讓回訪的人進來，剩下名額才從沒見過的角色裡補。
+  純邏輯（`buildDayRoster`、`advanceStorySave`）跟讀寫 localStorage 的部分刻意分開，前者可以直接單元測試。
+  準備頁會顯示「第幾天」，也能一鍵重新開始一段新故事（清存檔）。
+  沒聽到的願望不會有下一集——故事得靠你真的回應了才會繼續。
+- 這個模式**不出現 AI 稀有信眾**：角色是排好的名單，隨機生成會打亂回訪的故事線。
+
+**M8（模式 C「神明轉單」）完成**：
+
+- **業務範圍規則書**：`sim/rulebook.ts` 定義 category → 是否歸月老受理的參考表，初始值等於現實
+  （感情／健康歸月老，財運轉財神、考試轉文昌帝君、報復轉城隍爺、搶票與離譜願望沒人管）。
+  批示對錯永遠只看每則願望自己的 `domain` 欄位（`verdict.ts` 既有邏輯不變），規則書純粹是玩家看得到、
+  可能被公文改得跟現實脫節的參考資料——照規則書辦事卻被現實打臉，就是這個模式的核心整人機制。
+- **公文更新**：值班途中會收到 2–3 份公文，時間點依當天長度等比例排定，套用時規則書即時更新、
+  推播成一則 outcome，也記進「今日公文」log。準備頁的規則書面板（右上角「規則書」按鈕）隨時可查目前狀態。
+- **業務範圍判斷錯了**：除了原本的怨氣／功德懲罰，真正該管的神明會多跳出來抱怨一句
+  （`complaintFor`，例如「財神託夢抗議」），沒人管的類別則是自嘲式吐槽，不牽拖到特定神明。
+- **節奏**：中速，起始生成間隔比初一十五拉長、全程加速幅度也小很多——這個模式的壓力來自判斷而非人潮。
+- `VerdictBar` 在模式 C 會多顯示一行「規則書目前怎麼寫」的提示，但不會告訴你規則書是不是跟現實一致。
+
 **M7.5（帳號、許願牆與社群互動）完成**：
 
 - **Google 登入**：ID token 由後端 `google-auth-library` 驗簽後換成自己的 session JWT，放 httpOnly cookie。
@@ -79,7 +108,7 @@ npm run db:generate --workspace=@moon/api
 - HUD 有靜音切換，狀態存 localStorage。自動播放政策：AudioContext 在值班開始那次點擊裡建立並 resume，
   另外掛一次性手勢監聽保底。
 
-下一步是 M8（模式 C）、M9（模式 B）。完整里程碑見 `~/.claude/plans/3d-indexed-harp.md`。
+M0–M9（含 M7.5）都做完了，三種模式都可玩。完整里程碑見 `~/.claude/plans/3d-indexed-harp.md`。
 
 效能現況（1280×720，dpr 2）：69–73 draw call、4.3k triangle、120fps；手機尺寸 61 call。
 draw call 預算是 100，其中約 8 個是後製 pass。柱子、香、信眾都走 `InstancedMesh`。

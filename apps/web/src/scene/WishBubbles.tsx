@@ -39,8 +39,8 @@ function muffle(text: string, ratio: number): string {
   let out = '';
   for (let i = 0; i < text.length; i++) {
     const ch = text[i] ?? '';
-    // 標點留著，句子的節奏還聽得出來
-    const isPunctuation = '，。？！、「」…'.includes(ch);
+    // 標點跟換行留著，句子的節奏（跟模式 B 的分段對話）還看得出來
+    const isPunctuation = '，。？！、「」…\n'.includes(ch);
     const noise = ((i * 2654435761) % 1000) / 1000;
     out += !isPunctuation && noise < ratio ? '⋯' : ch;
   }
@@ -79,17 +79,19 @@ function Bubble({ id, wishId }: { id: string; wishId: string }) {
   });
 
   if (!wish) return null;
+  // 模式 B 的願望是多段對話，字比較多，氣泡放寬一點才不會擠成一團
+  const wide = state?.mode === 'story';
 
   return (
     <group ref={group}>
       <Html center distanceFactor={9} zIndexRange={[20, 0]}>
         <div
-          className="w-52 cursor-pointer rounded-lg border border-temple-gold/40 bg-black/75 px-3 py-2 text-center transition hover:border-temple-gold/70 sm:w-64"
+          className={`cursor-pointer rounded-lg border border-temple-gold/40 bg-black/75 px-3 py-2 text-center transition hover:border-temple-gold/70 ${wide ? 'w-64 sm:w-80' : 'w-52 sm:w-64'}`}
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => useInteraction.getState().focus(id)}
         >
           <p
-            className="text-[12px] leading-snug text-incense sm:text-[13px]"
+            className="whitespace-pre-line text-[12px] leading-snug text-incense sm:text-[13px]"
             style={{ filter: blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : undefined }}
           >
             {muffled}

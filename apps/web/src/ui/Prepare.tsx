@@ -3,6 +3,7 @@ import { useSession, type Difficulty } from '../store';
 import { useState } from 'react';
 import { useGame } from '../gameStore';
 import { IntroCards } from '../components/IntroCards';
+import { currentStoryDay, prepareStoryDay, resetStorySave } from '../content/story';
 
 interface ModeCard {
   mode: GameMode;
@@ -25,15 +26,15 @@ const MODES: ModeCard[] = [
     mode: 'sorting',
     name: '神明轉單',
     tempo: '中',
-    blurb: '照著業務範圍規則書判斷：這願望到底該不該你管？轉錯單，別的神明會抱怨。',
-    ready: false,
+    blurb: '照著業務範圍規則書判斷：這願望到底該不該你管？轉錯單，別的神明會抱怨。規則書中途會被公文改。',
+    ready: true,
   },
   {
     mode: 'story',
     name: '凡人故事',
     tempo: '慢',
-    blurb: '一天只來幾個人，但每個都有完整的故事。你的決定，隔天會回來找你。',
-    ready: false,
+    blurb: '一天只來 5–8 個人，但每個都有完整的故事，沒有打烊倒數。你的決定，隔天會回來找你。',
+    ready: true,
   },
 ];
 
@@ -48,10 +49,22 @@ export function Prepare({ onLeave }: { onLeave: () => void }) {
     useSession();
   const startGame = useGame((s) => s.start);
   const [showRules, setShowRules] = useState(false);
+  const [storyDay, setStoryDay] = useState(() => currentStoryDay());
 
   const begin = () => {
     startGame(mode, difficulty);
+    if (mode === 'story') {
+      // 名單要照這一天實際擲出來的人數排（5–8 人，見 sim/state.ts），
+      // 所以得等 startGame 把 state 生出來之後才能讀 storyRosterToday
+      const roster = useGame.getState().state?.storyRosterToday ?? 5;
+      prepareStoryDay(roster);
+    }
     setPhase('play');
+  };
+
+  const restartStory = () => {
+    resetStorySave();
+    setStoryDay(currentStoryDay());
   };
 
   return (
@@ -107,15 +120,37 @@ export function Prepare({ onLeave }: { onLeave: () => void }) {
           ))}
         </div>
 
-        <label className="mt-8 flex items-center gap-3 text-sm text-incense/80">
-          <input
-            type="checkbox"
-            checked={aiRareEnabled}
-            onChange={(e) => setAiRareEnabled(e.target.checked)}
-            className="h-4 w-4 accent-[var(--color-temple-gold)]"
-          />
-          讓稀有信眾出現（願望由 AI 即時生成，需要連線；關閉則只用預寫願望池）
-        </label>
+        {mode === 'story' ? (
+          <div className="mt-8 rounded-lg border border-incense/15 bg-black/30 px-4 py-3">
+            <p className="text-sm text-incense/80">
+              {storyDay > 1
+                ? `這是故事的第 ${storyDay} 天。上次有回應的人，今天可能會回來找你。`
+                : '這是故事的第一天，還沒有人回訪。'}
+            </p>
+            {storyDay > 1 && (
+              <button
+                type="button"
+                onClick={restartStory}
+                className="mt-2 text-xs text-incense/45 underline-offset-4 hover:underline"
+              >
+                重新開始一段新故事（清掉存檔，回到第一天）
+              </button>
+            )}
+            <p className="mt-2 text-[11px] leading-relaxed text-incense/40">
+              這個模式不出現 AI 稀有信眾——每天的角色是固定排好的，隨機生成會打亂回訪的故事線。
+            </p>
+          </div>
+        ) : (
+          <label className="mt-8 flex items-center gap-3 text-sm text-incense/80">
+            <input
+              type="checkbox"
+              checked={aiRareEnabled}
+              onChange={(e) => setAiRareEnabled(e.target.checked)}
+              className="h-4 w-4 accent-[var(--color-temple-gold)]"
+            />
+            讓稀有信眾出現（願望由 AI 即時生成，需要連線；關閉則只用預寫願望池）
+          </label>
+        )}
 
         <div className="mt-10 flex items-center gap-4">
           <button

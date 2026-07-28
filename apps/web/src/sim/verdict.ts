@@ -6,6 +6,7 @@ import {
   type Worshipper,
 } from './state';
 import { addFatigue, addMerit, addResentment, spendIncense } from './resources';
+import { complaintFor } from './rulebook';
 
 /**
  * 月老的回應。全部是純函式，只改動傳進來的 state——
@@ -89,6 +90,16 @@ export function resolveVerdict(
   const tone: 'good' | 'bad' | 'neutral' =
     verdict === 'approve' ? 'good' : verdict === 'transfer' ? (mine ? 'bad' : 'good') : 'neutral';
   pushOutcome(state, wish.resolutions[verdict], tone);
+
+  // 模式 C 專屬：業務範圍判斷錯了，讓真正該管的神明出面抱怨一句
+  if (state.mode === 'sorting') {
+    if (verdict === 'approve' && !mine) {
+      pushOutcome(state, complaintFor(wish.domain, true), 'bad');
+    } else if (verdict === 'transfer' && mine) {
+      pushOutcome(state, complaintFor(wish.domain, false), 'bad');
+    }
+  }
+
   record(state, w, verdict);
   dismiss(w);
 }

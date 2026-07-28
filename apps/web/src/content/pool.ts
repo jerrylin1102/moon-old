@@ -3,6 +3,7 @@ import core from './wishes/core.json';
 import love from './wishes/love.json';
 import life from './wishes/life.json';
 import absurd from './wishes/absurd.json';
+import story from './wishes/story.json';
 
 /**
  * 官方願望池。刻意留在 repo 的 JSON 檔裡走版本控制（改動看得到 diff），
@@ -11,6 +12,13 @@ import absurd from './wishes/absurd.json';
  * 玩家投稿的已核准願望會在執行期從 /api/wishes/approved 拉回來 merge（M6）。
  */
 export const officialPool: Wish[] = wishPoolSchema.parse([...core, ...love, ...life, ...absurd]);
+
+/**
+ * 模式 B（凡人故事）專用願望池。刻意跟 officialPool 分開：
+ * 這些願望靠 `followUp` 串成跨天的故事，混進 rush / sorting 的隨機池會讓回訪機制失去意義，
+ * 文字也寫得比一般願望長（多段對話），不受一般願望池「氣泡塞得下」的長度測試限制。
+ */
+export const storyPool: Wish[] = wishPoolSchema.parse(story);
 
 /** 執行期合併進來的社群/AI 願望 */
 let extraPool: Wish[] = [];
@@ -45,7 +53,11 @@ export function allWishes(): Wish[] {
 }
 
 export function findWish(id: string): Wish | undefined {
-  return officialPool.find((w) => w.id === id) ?? extraPool.find((w) => w.id === id);
+  return (
+    officialPool.find((w) => w.id === id) ??
+    extraPool.find((w) => w.id === id) ??
+    storyPool.find((w) => w.id === id)
+  );
 }
 
 /**

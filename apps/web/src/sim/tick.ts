@@ -2,6 +2,7 @@ import type { GameState } from './state';
 import { addFatigue, isOverwhelmed } from './resources';
 import { updateSpawner, type SimDeps } from './spawner';
 import { isWaiting, resolveWorshipperCollisions, updateWorshipper } from './worshipper';
+import { updateRulebook } from './rulebook';
 
 /** 固定步長。實際 dt 會被切成這個大小推進，避免不同螢幕刷新率跑出不同難度 */
 export const FIXED_STEP = 1 / 60;
@@ -23,7 +24,19 @@ function step(state: GameState, dt: number, deps: SimDeps | undefined): void {
   if (state.status === 'running') {
     if (isOverwhelmed(state)) state.status = 'overwhelmed';
     else if (state.dayLength > 0 && state.elapsed >= state.dayLength) state.status = 'closed';
+    // story 沒有時限：今天的名額都放完了、在場的人也都走光了，這天才算打烊
+    else if (
+      state.mode === 'story' &&
+      state.storyRosterToday > 0 &&
+      state.nextId - 1 >= state.storyRosterToday &&
+      state.worshippers.length === 0
+    ) {
+      state.status = 'closed';
+    }
   }
+
+  // 模式 C 專屬：檢查有沒有公文到期，到了就套用並推播
+  if (state.status === 'running' && state.mode === 'sorting') updateRulebook(state);
 
   if (deps) {
     if (state.status === 'running') updateSpawner(state, dt, deps);

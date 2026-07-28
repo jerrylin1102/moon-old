@@ -10,6 +10,7 @@ import { useRareWishes } from './useRareWishes';
 import { VerdictBar } from './VerdictBar';
 import { Outcomes } from './Outcomes';
 import { RunEnded } from './RunEnded';
+import { RuleBook } from './RuleBook';
 import { onCooldown } from '../sim/fatigue';
 import { isMuted, toggleMuted, useGameAudio } from '../audio';
 
@@ -67,6 +68,7 @@ export function Hud() {
   useRareWishes(aiRareEnabled);
   useGameAudio();
   const [muted, setMutedState] = useState(isMuted);
+  const [showRuleBook, setShowRuleBook] = useState(false);
 
   if (!state) return null;
   const cap = DIFFICULTY_PRESETS[state.difficulty].resentmentCap;
@@ -99,6 +101,15 @@ export function Hud() {
           <span className="font-serif text-sm tracking-widest text-incense/75">
             打烊倒數 {Math.floor(remaining / 60)}:{String(Math.floor(remaining % 60)).padStart(2, '0')}
           </span>
+        )}
+        {state.mode === 'sorting' && (
+          <button
+            type="button"
+            onClick={() => setShowRuleBook(true)}
+            className="rounded-full border border-temple-gold/40 px-4 py-1.5 text-xs text-temple-gold/85 transition hover:border-temple-gold/70"
+          >
+            規則書
+          </button>
         )}
         <button
           type="button"
@@ -140,6 +151,7 @@ export function Hud() {
       {!ended && <VerdictBar />}
       {!ended && <Outcomes />}
       <RunEnded />
+      {showRuleBook && <RuleBook onClose={() => setShowRuleBook(false)} />}
 
       {/* 手機的四顆大按鈕：拇指可及範圍內 */}
       <div

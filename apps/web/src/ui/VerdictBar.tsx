@@ -7,6 +7,7 @@ import { applyDivination, applyVerdict } from '../actions';
 import { isWaiting } from '../sim/worshipper';
 import { onCooldown } from '../sim/fatigue';
 import { CommentBox } from '../components/CommentBox';
+import { CATEGORY_LABEL as RULEBOOK_CATEGORY_LABEL } from '../sim/rulebook';
 
 const CATEGORY_LABEL: Record<WishCategory, string> = {
   love: '感情',
@@ -66,7 +67,15 @@ export function VerdictBar() {
           <span>{CATEGORY_LABEL[wish.category]}</span>
           <span>耐心 {Math.max(0, Math.ceil(w.patience))} 秒</span>
         </div>
-        <p className="mt-2 text-sm leading-relaxed text-incense">{wish.text}</p>
+        <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-incense">{wish.text}</p>
+
+        {state.mode === 'sorting' && (
+          <p className="mt-2 text-[11px] text-temple-gold/75">
+            規則書：「{RULEBOOK_CATEGORY_LABEL[wish.category]}」目前
+            {state.rulebook[wish.category] ? '歸月老親自受理' : '應轉單，不歸月老受理'}
+            （公文中途可能會改，仍要聽信眾實際怎麼說）
+          </p>
+        )}
 
         <div className="mt-4 flex gap-2">
           {buttons.map((b) => (

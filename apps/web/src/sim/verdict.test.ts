@@ -83,6 +83,36 @@ describe('批示', () => {
     expect(s.merit).toBe(2);
     expect(s.resentment).toBe(0);
   });
+
+  it('模式 C 批錯了：真正該管的神明會多跳出來抱怨一句', () => {
+    const moneyWish: WishInfo = {
+      intensity: 2,
+      category: 'money',
+      domain: 'caishen',
+      resolutions: { approve: '發了', reject: '沒發', transfer: '轉走了' },
+    };
+
+    const s = createInitialState('sorting', 'normal');
+    resolveVerdict(s, waiting(s), 'approve', moneyWish);
+    // 最後一則是 approve 的後果文，倒數第二則才是財神的抱怨
+    expect(s.outcomes.at(-1)?.text).toContain('財神');
+
+    const s2 = createInitialState('sorting', 'normal');
+    resolveVerdict(s2, waiting(s2), 'transfer', loveWish);
+    expect(s2.outcomes.at(-1)?.text).toContain('月老');
+  });
+
+  it('其他模式不會多這句神明抱怨', () => {
+    const s = createInitialState('rush', 'normal');
+    const ticketDomainWish: WishInfo = {
+      intensity: 2,
+      category: 'money',
+      domain: 'caishen',
+      resolutions: { approve: '發了', reject: '沒發', transfer: '轉走了' },
+    };
+    resolveVerdict(s, waiting(s), 'approve', ticketDomainWish);
+    expect(s.outcomes).toHaveLength(1);
+  });
 });
 
 describe('擲筊', () => {

@@ -10,6 +10,7 @@ import { postScore } from '../api';
 import { useAuth } from '../authStore';
 import { findWish } from '../content/pool';
 import { CommentBox } from '../components/CommentBox';
+import { concludeStoryDay, prepareStoryDay } from '../content/story';
 
 /** 收班：月老日記 */
 export function RunEnded() {
@@ -26,10 +27,19 @@ export function RunEnded() {
     'idle',
   );
   const uploadedRef = useRef(false);
+  const storyConcludedRef = useRef(false);
+  const [nextStoryDay, setNextStoryDay] = useState<number | null>(null);
 
   const ended = !!state && state.status !== 'running';
   // 日記只在收班那一刻算一次，之後不要每次重繪都換一組留言
   const diary = useMemo(() => (ended && state ? buildDiary(state) : null), [ended, state?.status]);
+
+  // 模式 B 收班就把今天的決定存起來：有下一集的願望排進明天的回訪佇列
+  useEffect(() => {
+    if (!ended || !state || state.mode !== 'story' || storyConcludedRef.current) return;
+    storyConcludedRef.current = true;
+    setNextStoryDay(concludeStoryDay(state.history));
+  }, [ended, state]);
 
   // 收班就直接上榜，玩家不用手動按上傳——名字在進遊戲前就已經問過了
   useEffect(() => {
@@ -65,7 +75,13 @@ export function RunEnded() {
     setSaved(false);
     setUploadStatus('idle');
     uploadedRef.current = false;
+    storyConcludedRef.current = false;
+    setNextStoryDay(null);
     startGame(mode, difficulty);
+    if (mode === 'story') {
+      const roster = useGame.getState().state?.storyRosterToday ?? 5;
+      prepareStoryDay(roster);
+    }
   };
 
   const back = () => {
@@ -88,6 +104,12 @@ export function RunEnded() {
         </p>
         <h2 className="mt-3 font-serif text-4xl tracking-widest text-incense">{diary.title}</h2>
         <p className="mt-4 text-sm leading-relaxed text-incense/75">{diary.verdict}</p>
+
+        {mode === 'story' && nextStoryDay !== null && (
+          <p className="mt-3 text-xs text-incense/50">
+            今天有回應的人，第 {nextStoryDay} 天可能會回來找你。
+          </p>
+        )}
 
         <dl className="mt-7 grid grid-cols-2 gap-x-6 gap-y-3">
           {diary.stats.map((s) => (
@@ -163,7 +185,7 @@ export function RunEnded() {
             onClick={again}
             className="rounded-full border border-temple-gold/60 bg-temple-red/50 px-7 py-3 font-serif tracking-widest text-incense transition hover:bg-temple-red/75 active:scale-95"
           >
-            再值一班
+            {mode === 'story' ? `進入第 ${nextStoryDay ?? '下'} 天` : '再值一班'}
           </button>
           <button
             type="button"

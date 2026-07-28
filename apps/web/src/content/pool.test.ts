@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { officialPool, findWish, pickWishId, intensityOf } from './pool';
+import { officialPool, storyPool, findWish, pickWishId, intensityOf } from './pool';
 
 /**
  * 願望池是純資料，最容易在編輯時出錯（重複 id、忘了寫某個 resolution、
@@ -51,5 +51,40 @@ describe('官方願望池', () => {
     expect(findWish(first.id)?.text).toBe(first.text);
     expect(intensityOf(first.id)).toBe(first.intensity);
     expect(intensityOf('不存在的願望')).toBe(1);
+  });
+});
+
+/**
+ * 模式 B 專用池，跟 officialPool 分開存放（見 pool.ts 的註解），
+ * 但兩邊共用同一個 id 命名空間，混用一套測試邏輯確保不會互相打架。
+ */
+describe('故事願望池', () => {
+  it('id 不重複，而且不會跟官方池撞名', () => {
+    const ids = storyPool.map((w) => w.id);
+    expect(new Set(ids).size).toBe(ids.length);
+
+    const officialIds = new Set(officialPool.map((w) => w.id));
+    for (const id of ids) {
+      expect(officialIds.has(id), id).toBe(false);
+    }
+  });
+
+  it('每一則都有三種後果，而且不是空字串', () => {
+    for (const w of storyPool) {
+      for (const key of ['approve', 'reject', 'transfer'] as const) {
+        expect(w.resolutions[key].length, `${w.id}.${key}`).toBeGreaterThan(3);
+      }
+    }
+  });
+
+  it('都標了 story tag，才不會被一般模式的隨機池誤挑到', () => {
+    for (const w of storyPool) {
+      expect(w.tags, w.id).toContain('story');
+    }
+  });
+
+  it('findWish 也查得到故事願望', () => {
+    const first = storyPool[0]!;
+    expect(findWish(first.id)?.text).toBe(first.text);
   });
 });

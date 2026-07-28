@@ -33,12 +33,30 @@ describe('信眾生成', () => {
     expect(s.worshippers.length).toBeLessThanOrEqual(LANE_X.length);
   });
 
-  it('尚未實作的模式不生成信眾', () => {
-    for (const mode of ['story', 'sorting'] as const) {
-      const s = createInitialState(mode, 'normal');
-      run(s, 30);
-      expect(s.worshippers).toHaveLength(0);
-    }
+  it('sorting 模式也會有人進門，但節奏比 rush 慢', () => {
+    const s = createInitialState('sorting', 'normal');
+    run(s, 20);
+    expect(s.worshippers.length).toBeGreaterThan(0);
+
+    const rush = createInitialState('rush', 'normal');
+    const sorting = createInitialState('sorting', 'normal');
+    const mean = (state: GameState) =>
+      Array.from({ length: 200 }, () => spawnInterval(state)).reduce((a, b) => a + b, 0) / 200;
+    expect(mean(sorting)).toBeGreaterThan(mean(rush));
+  });
+
+  it('story 模式一天只生成規定的人數，生完就不再放人進來', () => {
+    const s = createInitialState('story', 'normal');
+    run(s, 400);
+    // nextId 從 1 開始累加，生成過的人數 = nextId - 1
+    expect(s.nextId - 1).toBe(s.storyRosterToday);
+  });
+
+  it('story 模式沒有時限，但名額用完、人也走光了就會打烊', () => {
+    const s = createInitialState('story', 'easy');
+    run(s, 600);
+    expect(s.status).toBe('closed');
+    expect(s.worshippers).toHaveLength(0);
   });
 
   it('打烊之後不再放人進來', () => {
