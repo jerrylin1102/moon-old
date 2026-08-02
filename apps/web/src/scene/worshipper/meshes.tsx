@@ -76,15 +76,15 @@ export function WorshipperMeshes({ refs, onDown, onUp, onMove, onOut }: Worshipp
 
       {/* 女性信眾頭上的蝴蝶結：男性信眾這三個 mesh 每帧都縮放成 0，不會多佔畫面 */}
       <instancedMesh ref={refs.bowKnot} args={[undefined, undefined, SLOTS]}>
-        <boxGeometry args={[0.045, 0.045, 0.045]} />
+        <boxGeometry args={[0.04, 0.05, 0.045]} />
         <meshStandardMaterial color={BOW_COLOR} roughness={0.6} />
       </instancedMesh>
       <instancedMesh ref={refs.bowWingL} args={[undefined, undefined, SLOTS]}>
-        <boxGeometry args={[0.1, 0.06, 0.02]} />
+        <boxGeometry args={[0.12, 0.1, 0.018]} />
         <meshStandardMaterial color={BOW_COLOR} roughness={0.6} />
       </instancedMesh>
       <instancedMesh ref={refs.bowWingR} args={[undefined, undefined, SLOTS]}>
-        <boxGeometry args={[0.1, 0.06, 0.02]} />
+        <boxGeometry args={[0.12, 0.1, 0.018]} />
         <meshStandardMaterial color={BOW_COLOR} roughness={0.6} />
       </instancedMesh>
 

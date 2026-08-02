@@ -9,6 +9,7 @@ import { Censer } from './Censer';
 import { Lanterns } from './Lanterns';
 import { HangingLamps } from './HangingLamps';
 import { DoorPlaque } from './DoorPlaque';
+import { GateExterior } from './GateExterior';
 
 /** 整座廟：全部由 three.js 內建幾何體程序組成，零外部模型 */
 export function Temple() {
@@ -26,6 +27,7 @@ export function Temple() {
       <Lanterns m={m} />
       <HangingLamps m={m} />
       <DoorPlaque />
+      <GateExterior m={m} />
     </group>
   );
 }

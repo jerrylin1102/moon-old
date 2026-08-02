@@ -3,7 +3,6 @@ import { and, desc, eq, isNull, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db, schema } from '../db/client';
 import { currentUser, identityCode } from '../auth/session';
-import { checkRules, shouldAutoReject } from '../moderation/rules';
 import { queueNotification } from '../notify';
 
 /**
@@ -133,14 +132,6 @@ export async function commentRoutes(app: FastifyInstance): Promise<void> {
       const params = z.object({ id: z.string().uuid() }).safeParse(request.params);
       const parsed = commentSchema.safeParse(request.body);
       if (!params.success || !parsed.success) return reply.code(400).send({ error: '格式不對' });
-
-      const flags = checkRules(parsed.data.body);
-      if (shouldAutoReject(flags)) {
-        return reply.code(422).send({
-          error: 'filtered',
-          message: '留言裡好像有聯絡方式或個資，拿掉之後再送一次。',
-        });
-      }
 
       const [wish] = await db
         .select({ id: schema.submissions.id, authorId: schema.submissions.authorId })

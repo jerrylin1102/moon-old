@@ -12,6 +12,11 @@ export function useKeyboard(enabled: boolean) {
 
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+      // 正在輸入框（留言）打字時，空白鍵等快捷鍵要留給輸入本身，不能被搶去觸發神通／批示
+      const target = e.target;
+      if (target instanceof HTMLElement && (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT')) {
+        return;
+      }
       const focused = useInteraction.getState().focusedId;
 
       switch (e.key) {

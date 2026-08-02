@@ -3,7 +3,9 @@ import {
   CENSER_FOOTPRINT_DEPTH,
   CENSER_FOOTPRINT_WIDTH,
   CENSER_POSITION,
+  DOOR_WIDTH,
   DOOR_Z,
+  WALL_THICKNESS,
 } from '../scene/layout';
 import { addFatigue, addIncense, addResentment } from './resources';
 import type { GameState, Worshipper, WorshipperGender, WorshipperPhase } from './state';
@@ -72,14 +74,17 @@ export function createWorshipper(
   gender: WorshipperGender,
 ): Worshipper {
   const seed = Math.random();
-  const laneX = LANE_X[lane] ?? 0;
+  const entryDrift = jitterOf(seed, 2.3) * 0.9;
+  // 生成點就直接卡在門洞寬度內（跟 targetFor 的 entering 分支同一條公式），
+  // 外側走道（±3、±4.2）的人才不會一出生就卡在門洞外側的實牆裡
+  const spawnX = funnelThroughDoor((LANE_X[lane] ?? 0) + entryDrift);
 
   return {
     id: `w${state.nextId++}`,
     wishId,
     phase: 'entering',
     phaseTime: 0,
-    position: [laneX, DOOR_Z - 0.5],
+    position: [spawnX, DOOR_Z - 0.5],
     patience,
     hasOffering: seed > 0.55,
     lane,
@@ -100,6 +105,29 @@ function jitterOf(seed: number, salt: number): number {
   return (v - Math.floor(v)) * 2 - 1;
 }
 
+/**
+ * 門洞淨寬扣掉人的肩寬，走道最外側兩道（±3、±4.2）、以及紅線配對後的 exitX
+ * 都可能落在這個範圍外——只要人還卡在門洞的牆體 z 帶內，x 就得先收攏進來，
+ * 不然會直接對著門洞兩側的實牆走一條直線穿過去。
+ */
+const DOOR_PASS_HALF_WIDTH = DOOR_WIDTH / 2 - 0.5;
+
+/** entering/leaving 算出來的 x 最極端可能是「最外側走道 + 最大隨機偏移」，等比例縮進門洞寬度要用這個當分母 */
+const MAX_ENTRY_X = Math.max(...LANE_X.map(Math.abs)) + 0.9;
+
+/**
+ * 等比例縮放進門洞寬度內，而不是直接截斷（clamp）——
+ * 截斷會讓所有超出範圍的走道／seed 全部疊到同一個邊界值，
+ * 外側走道的人穿門時會變成排成一直線，看起來又是排練過的隊伍。
+ * 線性縮放維持單調遞增，不同走道、不同 seed 算出來的落點還是彼此有別。
+ */
+function funnelThroughDoor(x: number): number {
+  return (x / MAX_ENTRY_X) * DOOR_PASS_HALF_WIDTH;
+}
+
+/** 前牆實際厚度的一半，x 要等完全穿出這個 z 帶才能放行走回原本（可能超出門洞寬度）的走道 */
+const WALL_HALF_THICKNESS = WALL_THICKNESS / 2;
+
 /** 移動型階段的目標點；回傳 null 表示這個階段是站在原地做事 */
 function targetFor(w: Worshipper): [number, number] | null {
   const laneX = LANE_X[w.lane] ?? 0;
@@ -108,6 +136,11 @@ function targetFor(w: Worshipper): [number, number] | null {
     case 'entering': {
       // 每個人進門的落點依 seed 略為錯開，不然同一走道進來的人永遠走同一條線，像排練過
       const entryDrift = jitterOf(w.seed, 2.3) * 0.9;
+      // 人還在門洞外（z 還沒過門檻）時，先瞄準收攏到門洞寬度內的落點，
+      // 免得外側走道的人直接對著實牆走一條直線穿過去；進門之後才放行走回自己的走道
+      if (w.position[1] < DOOR_Z + WALL_HALF_THICKNESS) {
+        return [funnelThroughDoor(laneX + entryDrift), DOOR_Z + 0.4];
+      }
       return [laneX + entryDrift, DOOR_Z + 2];
     }
     case 'toCenser':
@@ -126,14 +159,18 @@ function targetFor(w: Worshipper): [number, number] | null {
     case 'leaving': {
       // 紅線配對成功的兩人，離場目標收斂到共同算好的中點，牽手並肩走出去——
       // 這個目標本身就跟平常離場不同，不用再疊加隨機彎繞，保持乾淨的收斂路徑。
-      if (w.exitX !== undefined) return [w.exitX, DOOR_Z - 1.5];
-
       // 一般離場：剛轉身的前段先往一個依 seed 偏移的中繼點彎，快到門口時才收斂回直線，
       // 不然所有人離場都是同一條回頭直線，跟進門時的隊形一樣死板。
       const leaveDrift = jitterOf(w.seed, 6.1) * 1.1;
       const curveProgress = Math.min(1, w.phaseTime / LEAVE_CURVE_DURATION);
-      const targetX = laneX + leaveDrift * (1 - curveProgress);
-      return [targetX, DOOR_Z - 1.5];
+      const finalX = w.exitX !== undefined ? w.exitX : laneX + leaveDrift * (1 - curveProgress);
+
+      // 人還沒出門檻（z 還在牆體那一帶）時，先收攏到門洞寬度內再出去，
+      // exitX 或最外側走道都可能超出門洞——直接照原本 x 走會撞牆
+      if (w.position[1] > DOOR_Z - WALL_HALF_THICKNESS) {
+        return [funnelThroughDoor(finalX), DOOR_Z - 0.4];
+      }
+      return [finalX, DOOR_Z - 1.5];
     }
     default:
       return null;
@@ -157,6 +194,12 @@ const CENSER_AVOID_BACK_Z = CENSER_POSITION[2] + (CENSER_FOOTPRINT_DEPTH / 2 + W
  * 等橫向拉開到禁行半徑之外才放行繼續原本的路徑。
  * 只影響移動的「方向」，抵達判定仍然看真正的目的地，不會因為閃避點提早觸發下一階段。
  *
+ * z 一定要用「目標」的 z，不能用當下 pz——早期版本閃避時把 z 釘死在當下位置，
+ * 人只要 x 還沒拉開到禁行半徑外就完全卡在爐台旁邊的深度帶裡動彈不得，
+ * 每 frame 被 resolveWorshipperCollisions 推來推去，看起來就是貼著桌子狂抖、
+ * 身體還可能被推進桌沿。z 跟著目標走，閃避期間人仍持續往前推進，
+ * 頂多繞爐台側邊多花半秒，不會卡死在原地。
+ *
  * 閃避側用「自己走道」的正負號決定，不能用當下 px 的正負號——
  * 人被 resolveWorshipperCollisions 擠到中線附近時 px 正負號會逐 frame翻來覆去，
  * 若閃避側跟著翻，目標點就在 -RADIUS/+RADIUS 之間跳，畫面表現成貼著爐台邊緣狂閃。
@@ -168,7 +211,7 @@ function avoidCenser(w: Worshipper, target: [number, number]): [number, number] 
   if (pz < CENSER_AVOID_FRONT_Z || pz > CENSER_AVOID_BACK_Z) return target;
 
   const side = (LANE_X[w.lane] ?? 0) >= 0 ? 1 : -1;
-  return [side * CENSER_AVOID_RADIUS, pz];
+  return [side * CENSER_AVOID_RADIUS, target[1]];
 }
 
 /** 兩個人中心距離小於這個值就算身體疊在一起 */

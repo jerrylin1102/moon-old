@@ -146,22 +146,30 @@ export function useWorshipperFrame(refs: WorshipperMeshRefs) {
         const headLeftZ = Math.sin(w.facing);
         const bowX = headX + headForwardX * 0.13 + headLeftX * 0.1;
         const bowZ = headZ + headForwardZ * 0.13 + headLeftZ * 0.1;
-        const bowY = headY + 0.12;
+        // 頭方塊半高 0.16，蝴蝶結中心得墊到 0.19 以上才不會被頭方塊蓋住
+        const bowY = headY + 0.2;
 
-        dummy.position.set(bowX, bowY, bowZ);
+        // 結心貼在翅膀正前方，蓋住兩片翅膀交會的接縫，蝴蝶結才有「夾住」的立體感
+        dummy.position.set(
+          bowX + headForwardX * 0.02,
+          bowY,
+          bowZ + headForwardZ * 0.02,
+        );
         dummy.rotation.set(0, w.facing, 0, 'XYZ');
         dummy.scale.setScalar(1);
         dummy.updateMatrix();
         bowKnotMesh.setMatrixAt(slot, dummy.matrix);
 
+        // 翅膀繞著「面朝方向」這根軸滾轉（roll），左右對稱歪向結心，
+        // 從正面看才會是夾腰的蝴蝶結（八字形），不是攤平的一根橫桿
         for (const side of [-1, 1] as const) {
           const wingMesh = side === 1 ? bowWingRMesh : bowWingLMesh;
           dummy.position.set(
-            bowX + headLeftX * side * -0.06,
+            bowX + headLeftX * side * -0.045,
             bowY,
-            bowZ + headLeftZ * side * -0.06,
+            bowZ + headLeftZ * side * -0.045,
           );
-          dummy.rotation.set(0, w.facing + side * 0.55, 0, 'XYZ');
+          dummy.rotation.set(0, w.facing, side * 0.75, 'XYZ');
           dummy.scale.setScalar(1);
           dummy.updateMatrix();
           wingMesh.setMatrixAt(slot, dummy.matrix);

@@ -19,6 +19,8 @@ export function useTempleMaterials() {
       gold: make({ color: '#e6b455', roughness: 0.26, metalness: 0.85 }),
       bronze: make({ color: '#8d6d43', roughness: 0.42, metalness: 0.7 }),
       ash: make({ color: '#9a8f83', roughness: 1 }),
+      // 大門外的石階／石獅座，跟殿內木作、朱漆明確區隔出「室外」的材質感
+      stone: make({ color: '#5f5b57', roughness: 0.95 }),
       cloth: make({ color: '#bb3a33', roughness: 0.93 }),
       flame: make({
         color: '#ffbe63',

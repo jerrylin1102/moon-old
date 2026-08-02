@@ -22,6 +22,7 @@ const CATEGORY_LABEL: Record<WishCategory, string> = {
 /** 選中一位信眾後出現的批示條 */
 export function VerdictBar() {
   const focusedId = useInteraction((s) => s.focusedId);
+  const threadFrom = useInteraction((s) => s.threadFrom);
   useGame((s) => s.version);
   const [castingJiao, setCastingJiao] = useState(false);
   const [commenting, setCommenting] = useState(false);
@@ -43,7 +44,8 @@ export function VerdictBar() {
   const w = focusedId ? state?.worshippers.find((x) => x.id === focusedId) : undefined;
   const wish = w ? findWish(w.wishId) : undefined;
 
-  if (!state || !w || !wish || !isWaiting(w)) return null;
+  // 拖紅線時把面板收起來，不然牽線手勢一路穿過互動欄位，兩邊搶指標事件
+  if (!state || !w || !wish || !isWaiting(w) || threadFrom) return null;
   const cooling = onCooldown(state);
 
   // 贊助作者的彩蛋信眾：點「准」不直接結案，先跳贊助資訊視窗，關閉視窗時才真正收尾
@@ -71,7 +73,7 @@ export function VerdictBar() {
   const buttons = castingJiao ? jiaoButtons : verdictButtons;
 
   return (
-    <div className="absolute inset-x-0 bottom-28 flex justify-center px-4 sm:bottom-10">
+    <div className="absolute inset-x-0 bottom-28 z-50 flex justify-center px-4 sm:bottom-10">
       <div className="w-full max-w-xl rounded-xl border border-temple-gold/40 bg-black/80 p-4 backdrop-blur-sm">
         <div className="flex items-baseline justify-between text-[11px] tracking-widest text-incense/55">
           <span className="flex items-center gap-1.5">
