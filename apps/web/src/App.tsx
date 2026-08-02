@@ -7,8 +7,8 @@ import { PlayPage } from './pages/PlayPage';
 import { LeaderboardPage } from './pages/LeaderboardPage';
 import { WishesPage } from './pages/WishesPage';
 import { AdminPage } from './pages/AdminPage';
-import { fetchApprovedWishes, fetchAuthConfig, fetchMe } from './api';
-import { mergeExtraWishes } from './content/pool';
+import { fetchApprovedWishes, fetchAuthConfig, fetchMe, fetchWishBank } from './api';
+import { hydrateOfficialPool, mergeExtraWishes } from './content/pool';
 import { useAuth } from './authStore';
 
 export default function App() {
@@ -26,6 +26,9 @@ export default function App() {
     void fetchApprovedWishes().then((wishes) => {
       if (wishes.length > 0) mergeExtraWishes(wishes);
     });
+
+    // 後台編輯過的官方題庫，拉不到就繼續用打包進 bundle 的 JSON 快照
+    void fetchWishBank().then((wishes) => hydrateOfficialPool(wishes));
   }, []);
 
   return (

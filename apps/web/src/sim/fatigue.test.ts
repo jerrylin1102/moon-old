@@ -74,6 +74,7 @@ describe('供品', () => {
       speed: 1,
       facing: 0,
       seed: 0.9,
+      gender: 'male',
     });
 
     run(s, 2);

@@ -558,5 +558,285 @@
       "transfer": "城隍爺說：問清楚再來，別在這裡猜。"
     },
     "source": "official"
+  },
+  {
+    "id": "love-141",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我暗戀他三年了，他上個月才知道我叫什麼名字。",
+    "intensity": 2,
+    "tags": ["slow-burn"],
+    "resolutions": {
+      "approve": "他記住了，還記住她喝拿鐵不加糖。",
+      "reject": "她把暗戀留在心裡，繼續喝她的拿鐵。",
+      "transfer": "財神表示：這跟錢無關，退回月老。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-142",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "我跟他每天傳早安晚安，可是從來沒約出去過。",
+    "intensity": 2,
+    "tags": ["online", "ambiguous"],
+    "resolutions": {
+      "approve": "他約了。地點是他們常聊的那間拉麵店。",
+      "reject": "早安晚安停了。她睡得比較好了。",
+      "transfer": "城隍爺說這不是冤屈，是懶。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-143",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我想跟前任復合，可是我朋友都叫我不要。",
+    "intensity": 3,
+    "tags": ["ex", "risky"],
+    "resolutions": {
+      "approve": "復合了。朋友嘴上唸，還是幫忙搬家。",
+      "reject": "她聽勸，封鎖後三個月遇到更合適的人。",
+      "transfer": "城隍爺看了看，說這案子太私人，退回。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-144",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "我跟他告白了，他說「謝謝，我很感動」。這什麼意思？",
+    "intensity": 2,
+    "tags": ["ambiguous", "classic-rejection"],
+    "resolutions": {
+      "approve": "其實是真的感動，一週後他也告白了。",
+      "reject": "這句話後來證實就是委婉拒絕，她哭了一場就好了。",
+      "transfer": "文昌帝君表示自己不懂感情，退貨。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-145",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我喜歡我最好朋友的男朋友，我很討厭自己。",
+    "intensity": 3,
+    "tags": ["guilt", "complicated"],
+    "resolutions": {
+      "approve": "她說出口，友情跟愛情都碎了，但她鬆了口氣。",
+      "reject": "她把這份心意留給自己，友誼保住了。",
+      "transfer": "城隍爺收下了，備註「這案子沒有贏家」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-146",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我想知道他到底有沒有女朋友，問了他都笑而不答。",
+    "intensity": 1,
+    "tags": ["curious"],
+    "resolutions": {
+      "approve": "沒有。而且他笑而不答是因為緊張。",
+      "reject": "有，她鬆了一口氣，覺得自己終於死心。",
+      "transfer": "沒神明想管別人有沒有女朋友。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-147",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我跟她通信半年了，她住在很遠的城市，我該去找她嗎？",
+    "intensity": 3,
+    "tags": ["long-distance"],
+    "resolutions": {
+      "approve": "他去了。她在車站舉了一個寫錯字的牌子。",
+      "reject": "他沒去，兩人漸漸沒了訊息，各自也還好。",
+      "transfer": "沒有神明會處理高鐵票的事。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-148",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我想追我的健身教練，可是我怕他覺得我只是想省學費。",
+    "intensity": 2,
+    "tags": ["awkward", "gym"],
+    "resolutions": {
+      "approve": "他早就發現了，還故意多教她三個月。",
+      "reject": "她繼續練，把身材練好，教練換人也沒差。",
+      "transfer": "財神表示這根本是要省學費，退回。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-149",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我跟他分手兩年了，昨天夢到他，這代表什麼？",
+    "intensity": 1,
+    "tags": ["dream", "nostalgia"],
+    "resolutions": {
+      "approve": "隔天他真的傳訊息來，只是問她過得好不好。",
+      "reject": "什麼都沒發生，她想通了那只是夢。",
+      "transfer": "城隍爺說夢的事不歸他管，退回。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-150",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我喜歡的人跟我告白了，可是我突然不確定自己要不要。",
+    "intensity": 2,
+    "tags": ["cold-feet"],
+    "resolutions": {
+      "approve": "她想清楚了，答應了，兩人都鬆一口氣。",
+      "reject": "她婉拒了，覺得自己還沒準備好，也沒關係。",
+      "transfer": "沒有神明想接猶豫不決的案子。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-151",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我跟男友求婚了，他說要想想，這樣正常嗎？",
+    "intensity": 3,
+    "tags": ["proposal", "anxious"],
+    "resolutions": {
+      "approve": "三天後他答應了，說只是被嚇到。",
+      "reject": "他後來說沒辦法，兩人和平分開。",
+      "transfer": "註生娘娘說這件事順序也不對。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-152",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我暗戀辦公室新來的同事，可是我是他的主管。",
+    "intensity": 2,
+    "tags": ["workplace", "power-dynamic"],
+    "resolutions": {
+      "approve": "她主動申請調組，半年後兩人開始約會。",
+      "reject": "她把感情收好，繼續當個公平的主管。",
+      "transfer": "財神表示這是人資的事，退回。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-153",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我想知道我跟他的緣分是不是已經用完了。",
+    "intensity": 2,
+    "tags": ["fate", "tired"],
+    "resolutions": {
+      "approve": "還沒用完，只是需要兩人都補一點耐心。",
+      "reject": "用完了。她鬆了口氣，覺得可以重新開始。",
+      "transfer": "城隍爺說緣分的事只有月老知道。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-154",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我喜歡上一個已經有對象的人，我知道這樣不對。",
+    "intensity": 3,
+    "tags": ["taken", "guilt"],
+    "resolutions": {
+      "approve": "對方後來分手了，是自然而然，不是她插手。",
+      "reject": "她把這份心意收起來，沒有做任何事。",
+      "transfer": "城隍爺收下了，說這種事最考驗人品。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-155",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我跟老公結婚十年了，最近變得像室友，還有救嗎？",
+    "intensity": 3,
+    "tags": ["marriage", "long-term"],
+    "resolutions": {
+      "approve": "他們去約了一次會，像談戀愛那樣，笨拙但有用。",
+      "reject": "兩人各自忙，感情繼續淡，但沒人先開口。",
+      "transfer": "註生娘娘表示婚姻保鮮不是她的業務。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-156",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我在相親市場被嫌年紀大，可是我覺得自己狀態很好。",
+    "intensity": 2,
+    "tags": ["dating-market", "confidence"],
+    "resolutions": {
+      "approve": "她遇到一個不看年紀、只看她笑容的人。",
+      "reject": "她退出相親市場，自己過得挺好。",
+      "transfer": "財神表示這是市場機制，他管不了。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-157",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我喜歡的人跟我告白的方式是傳一首歌，我看不懂。",
+    "intensity": 1,
+    "tags": ["indirect", "music"],
+    "resolutions": {
+      "approve": "她把歌詞讀懂了，也回傳了一首。",
+      "reject": "她問清楚了，發現對方只是分享歌單。",
+      "transfer": "沒有神明聽得懂年輕人傳歌的暗號。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-158",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我跟她在婚禮上重逢，她說「好久不見」，我心跳很快。",
+    "intensity": 2,
+    "tags": ["reunion", "wedding"],
+    "resolutions": {
+      "approve": "婚禮結束後他們交換了聯絡方式，慢慢開始。",
+      "reject": "心跳歸心跳，兩人各自有伴，禮貌道別。",
+      "transfer": "城隍爺說婚禮的事他不插手，怕觸霉頭。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-159",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我跟他吵架冷戰第五天了，我不知道要不要先低頭。",
+    "intensity": 2,
+    "tags": ["conflict", "pride"],
+    "resolutions": {
+      "approve": "她先傳了訊息，對方秒回，兩人都鬆了口氣。",
+      "reject": "冷戰持續，最後不了了之，也算一種答案。",
+      "transfer": "城隍爺說吵架是小事，退回。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "love-160",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我喜歡的人是我表妹介紹給我認識的，這樣會不會很怪。",
+    "intensity": 1,
+    "tags": ["awkward", "family"],
+    "resolutions": {
+      "approve": "表妹全力支持，還當了婚禮伴娘。",
+      "reject": "兩人維持普通朋友，家庭聚會也不尷尬。",
+      "transfer": "註生娘娘說親戚介紹的事她不敢碰。"
+    },
+    "source": "official"
   }
 ]

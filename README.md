@@ -178,6 +178,41 @@ postgres              只存玩家投稿與分數；官方願望池留在 repo �
 - `apps/web/src/scene` — R3F 場景，全部由內建幾何體程序生成，零外部 3D 模型
 - `apps/api/src` — Fastify 路由、審核、Drizzle schema
 
+## 多玩家同時在線：擴充要點
+
+這個遊戲**每個玩家的模擬完全跑在自己瀏覽器分頁**（client-side single player）；
+api 只是無狀態 REST，不維護任何房間或即時連線，玩家之間互相看不到彼此。
+「很多人同時玩會不會塞車」因此完全是 api + Postgres 這一層的問題，重點：
+
+- **api 可以直接水平擴充多個 replica**：Session 是簽章過的 httpOnly JWT cookie（`auth/session.ts`），
+  沒有 server-side session store，不需要黏性連線（sticky session），LB 後面加幾個 replica 就好。
+- **多開 replica 時記得調 `DATABASE_POOL_MAX`**：每個 replica 各自維護一個 `pg.Pool`
+  （預設 max 10，見 `apps/api/src/db/client.ts`），N 個 replica 的總連線數不能超過 Postgres 的
+  `max_connections`，部署時要一起算。
+- **熱門 GET 有快取**：`GET /api/wishes/approved`（未來 `GET /api/wishes/bank`）走
+  `apps/api/src/ttlCache.ts` 的記憶體 TTL 快取（60 秒），內容變動不頻繁，
+  審核／投稿／收回會主動 `invalidate()`，不用整整等一個 TTL 週期。快取只在單一 process 內，
+  多 replica 各自快取一份，正確性影響有限。
+- 既有 rate limit（全域 120 次/分鐘、投稿 5 次/10 分鐘、AI 彩蛋每 IP/每日上限）維持不變，
+  新增端點記得比照同一套規格加限流。
+- **社群願望投稿者頭像**：Postgres（`users.avatar_url`）只存網址參照，實體圖片快取進 MinIO
+  （`apps/api/src/storage/minio.ts`），登入時非同步快取、不擋登入回應，`MINIO_*` 沒設全就整組
+  停用、直接 fallback 回 Google 提供的原始頭像網址。
+
+## 官方題庫（wish_bank）
+
+官方願望池（一般模式用的那份）現在資料庫化了：
+
+- `apps/api/src/db/schema.ts` 的 `wishBank` 表是編輯的真相來源，`/admin` 的「題庫管理」分頁
+  可以直接 CRUD（新增、編輯、下架＝軟刪除，不做硬刪除）。
+- 開機時若 `wish_bank` 是空的，`apps/api/src/db/seedWishBank.ts` 會用 `apps/api/src/db/seed/*.json`
+  （跟 `apps/web/src/content/wishes/*.json` 同步複製的一次性快照）灌一批初始資料進去。
+- 前端開局時打 `GET /api/wish-bank`（`apps/web/src/content/pool.ts` 的 `hydrateOfficialPool()`）
+  換上資料庫版內容；拉不到（離線、後端掛掉）就繼續用打包進 bundle 的 JSON，遊戲照樣能玩。
+- 防重複：`pickWishId()` 的近期記憶窗口依題庫大小動態調整（6~30 則），另外用 `localStorage`
+  （依訪客／登入身分分 key）記住最近看過的一批 id，減少重玩時一開局就撞到上次見過的題目。
+- 這次順便把官方題庫從 105 則擴充到 165 則（love/life/absurd 各補了一批）。
+
 ## 指令
 
 ```bash

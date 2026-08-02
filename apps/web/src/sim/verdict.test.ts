@@ -14,6 +14,7 @@ const loveWish: WishInfo = {
   category: 'love',
   domain: 'yuelao',
   resolutions: { approve: '成了', reject: '沒成', transfer: '轉走了' },
+  source: 'official',
 };
 
 const ticketWish: WishInfo = {
@@ -21,9 +22,10 @@ const ticketWish: WishInfo = {
   category: 'ticket',
   domain: 'nobody',
   resolutions: { approve: '搶到了', reject: '沒搶到', transfer: '轉給售票之神' },
+  source: 'official',
 };
 
-function waiting(state: GameState, lane = 0): Worshipper {
+function waiting(state: GameState, lane = 0, gender: Worshipper['gender'] = 'male'): Worshipper {
   const w: Worshipper = {
     id: `w${lane}`,
     wishId: 'love-001',
@@ -36,6 +38,7 @@ function waiting(state: GameState, lane = 0): Worshipper {
     speed: 1,
     facing: 0,
     seed: 0.5,
+    gender,
   };
   state.worshippers.push(w);
   return w;
@@ -90,6 +93,7 @@ describe('批示', () => {
       category: 'money',
       domain: 'caishen',
       resolutions: { approve: '發了', reject: '沒發', transfer: '轉走了' },
+      source: 'official',
     };
 
     const s = createInitialState('sorting', 'normal');
@@ -109,6 +113,7 @@ describe('批示', () => {
       category: 'money',
       domain: 'caishen',
       resolutions: { approve: '發了', reject: '沒發', transfer: '轉走了' },
+      source: 'official',
     };
     resolveVerdict(s, waiting(s), 'approve', ticketDomainWish);
     expect(s.outcomes).toHaveLength(1);
@@ -168,24 +173,49 @@ describe('神通', () => {
 });
 
 describe('牽紅線', () => {
-  it('兩邊都是感情事才算配對', () => {
+  it('兩邊都是感情事、緣分骰過門檻才算配對成功', () => {
     const s = createInitialState('rush', 'normal');
     const a = waiting(s, 0);
     const b = waiting(s, 1);
 
-    expect(tieRedThread(s, a, b, loveWish, loveWish)).toBe(true);
+    // rng 固定回傳 0，一定小於門檻，穩定成功
+    expect(tieRedThread(s, a, b, loveWish, loveWish, () => 0)).toBe(true);
     expect(s.matched).toBe(1);
     expect(s.handled).toBe(2);
     expect(a.phase).toBe('leaving');
     expect(b.phase).toBe('leaving');
   });
 
-  it('接錯線：不配對，還累積怨氣', () => {
+  it('配對成功後兩人會互記對方為 partner，離場目標收斂成兩條走道的中點', () => {
+    const s = createInitialState('rush', 'normal');
+    const a = waiting(s, 0);
+    const b = waiting(s, 2);
+
+    expect(tieRedThread(s, a, b, loveWish, loveWish, () => 0)).toBe(true);
+    expect(a.partnerId).toBe(b.id);
+    expect(b.partnerId).toBe(a.id);
+    expect(a.exitX).toBe(b.exitX);
+    expect(a.exitX).toBeDefined();
+  });
+
+  it('兩邊都是感情事，但緣分沒到——不配對、不加分，也累積怨氣', () => {
     const s = createInitialState('rush', 'normal');
     const a = waiting(s, 0);
     const b = waiting(s, 1);
 
-    expect(tieRedThread(s, a, b, loveWish, ticketWish)).toBe(false);
+    // rng 固定回傳 1，一定大於等於門檻，穩定失敗
+    expect(tieRedThread(s, a, b, loveWish, loveWish, () => 1)).toBe(false);
+    expect(s.matched).toBe(0);
+    expect(s.resentment).toBe(2);
+    expect(a.partnerId).toBeUndefined();
+  });
+
+  it('接錯線（不是兩邊都感情事）：不配對，還累積怨氣，不會骰緣分', () => {
+    const s = createInitialState('rush', 'normal');
+    const a = waiting(s, 0);
+    const b = waiting(s, 1);
+
+    expect(tieRedThread(s, a, b, loveWish, ticketWish, () => 0)).toBe(false);
     expect(s.matched).toBe(0);
     expect(s.resentment).toBe(2);
     expect(a.phase).toBe('awaiting');
@@ -195,5 +225,29 @@ describe('牽紅線', () => {
     const s = createInitialState('rush', 'normal');
     const a = waiting(s, 0);
     expect(tieRedThread(s, a, a, loveWish, loveWish)).toBe(false);
+  });
+});
+
+describe('稀有／社群信眾的分數加成', () => {
+  it('准了稀有（AI）信眾的願望，bonusScore 會多累加', () => {
+    const s = createInitialState('rush', 'normal');
+    const rareWish: WishInfo = { ...loveWish, source: 'ai' };
+    resolveVerdict(s, waiting(s), 'approve', rareWish);
+    expect(s.bonusScore).toBeGreaterThan(0);
+  });
+
+  it('准了官方願望，bonusScore 維持 0', () => {
+    const s = createInitialState('rush', 'normal');
+    resolveVerdict(s, waiting(s), 'approve', loveWish);
+    expect(s.bonusScore).toBe(0);
+  });
+
+  it('紅線配對成功時，稀有那一方會讓 bonusScore 增加，即使另一方是官方願望', () => {
+    const s = createInitialState('rush', 'normal');
+    const a = waiting(s, 0);
+    const b = waiting(s, 1);
+    const rareWish: WishInfo = { ...loveWish, source: 'ai' };
+    expect(tieRedThread(s, a, b, rareWish, loveWish, () => 0)).toBe(true);
+    expect(s.bonusScore).toBeGreaterThan(0);
   });
 });

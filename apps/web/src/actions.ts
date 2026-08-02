@@ -28,6 +28,7 @@ function wishInfo(wishId: string): WishInfo | null {
     category: wish.category,
     domain: wish.domain,
     resolutions: wish.resolutions,
+    source: wish.source,
   };
 }
 
@@ -107,6 +108,7 @@ export function applyThread(fromId: string, toId: string): boolean {
   const ok = tieRedThread(state, a, b, wishA, wishB);
   if (ok) {
     useInteraction.getState().addThread(from, to);
+    useInteraction.getState().addHeartBurst(from, to, a.gender === b.gender);
     sfxThreadTied();
   }
 

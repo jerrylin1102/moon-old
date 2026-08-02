@@ -1,0 +1,702 @@
+[
+  {
+    "id": "life-201",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "月老，明天早上十點售票。我開三台電腦，還需要什麼？",
+    "intensity": 2,
+    "tags": ["not-my-department"],
+    "resolutions": {
+      "approve": "月老越權了。她搶到兩張，結果朋友放鳥。",
+      "reject": "系統一開就崩。全國都沒搶到，她心裡好過一點。",
+      "transfer": "轉給售票系統之神。那位神明說他自己也在候補。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-202",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "我要搶演唱會的票，搶到我就跟我暗戀的人告白。",
+    "intensity": 2,
+    "tags": ["bargain"],
+    "resolutions": {
+      "approve": "票有了，告白也做了。兩件事她都嚇到手抖。",
+      "reject": "沒搶到。她把告白也一起延期，理由很牽強。",
+      "transfer": "轉單成功一半：票的部分轉走，告白退回月老。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-203",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "月老，我要考教甄第四年了。我知道這裡不管這個，但我沒地方講。",
+    "intensity": 3,
+    "tags": ["exhausted", "heavy"],
+    "resolutions": {
+      "approve": "月老越權辦了。她上了，但她說謝的是有人聽她講完。",
+      "reject": "她今年又沒上。但她開始準備轉換跑道，這次是自己決定的。",
+      "transfer": "文昌帝君接了，附註：這個人考很久了，麻煩看一下。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-204",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "我明天面試。可以順便問一下面試官單身嗎？",
+    "intensity": 1,
+    "tags": ["cheeky"],
+    "resolutions": {
+      "approve": "錄取了。面試官已婚，而且是他未來的主管。",
+      "reject": "沒錄取。倒是跟另一個面試者變成朋友。",
+      "transfer": "文昌帝君接工作那半，感情那半原封不動退回。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-205",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想加薪。加了我就有錢約會了。",
+    "intensity": 2,
+    "tags": ["honest"],
+    "resolutions": {
+      "approve": "加了三千。他把錢拿去繳補習費，約會的事再說。",
+      "reject": "沒加。他跳槽了，薪水多了八千。",
+      "transfer": "財神接單，備註：這個人邏輯很順。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-206",
+    "category": "money",
+    "domain": "caishen",
+    "text": "我和男朋友為了錢吵架。月老，這算感情問題還是財務問題？",
+    "intensity": 3,
+    "tags": ["boundary"],
+    "resolutions": {
+      "approve": "月老當感情辦。兩人開始記帳，吵架次數少了一半。",
+      "reject": "沒處理。半年後他們因為同一件事分手。",
+      "transfer": "財神接了，回覆：這是感情問題，但錢的部分我幫你算。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-207",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "我媽下週開刀。月老，我知道這不是你管的，但我怕。",
+    "intensity": 3,
+    "tags": ["fear", "heavy"],
+    "resolutions": {
+      "approve": "月老越權了，也不打算解釋。刀開得很順。",
+      "reject": "月老沒動手，只讓她在廟裡坐到不抖為止。刀還是開得很順。",
+      "transfer": "轉給該管的神明，那邊回：收到，這裡會處理。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-208",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "月老，我最近睡不好。不是因為感情，就是睡不好。",
+    "intensity": 2,
+    "tags": ["tired"],
+    "resolutions": {
+      "approve": "那晚他睡了九小時。醒來發現手機沒電，反而不慌。",
+      "reject": "他繼續失眠，但開始戒掉睡前滑手機。兩週後好一點。",
+      "transfer": "轉給該管的神明。那邊回：叫他少喝點咖啡。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-209",
+    "category": "revenge",
+    "domain": "chenghuang",
+    "text": "月老，我不要姻緣，我要我前任的新對象發現他有多爛。",
+    "intensity": 3,
+    "tags": ["bitter"],
+    "resolutions": {
+      "approve": "月老照辦。對方發現了，但沒人因此比較快樂。",
+      "reject": "月老沒動。三個月後她自己也忘了這件事。",
+      "transfer": "城隍爺收下，備註：這才是我的業務範圍。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-210",
+    "category": "revenge",
+    "domain": "chenghuang",
+    "text": "我被劈腿了。我不要他回來，我只要他不好過。",
+    "intensity": 3,
+    "tags": ["bitter", "heavy"],
+    "resolutions": {
+      "approve": "月老越權了。對方確實不好過，但她也沒好過多少。",
+      "reject": "她哭了一場，然後開始跑步。半年後跑了半馬。",
+      "transfer": "城隍爺接單，處理得又快又乾淨。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-211",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想買房。買了才有人願意跟我結婚。",
+    "intensity": 3,
+    "tags": ["pressure"],
+    "resolutions": {
+      "approve": "房子有了，貸款也有了。相親對象問的第一句是「幾坪」。",
+      "reject": "他先租了三年。後來遇到的人根本沒問房子。",
+      "transfer": "財神接單，並補了一句：房子跟姻緣沒有因果關係。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-212",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "我和他約好一起考上。月老，可以兩個都上嗎？",
+    "intensity": 3,
+    "tags": ["together"],
+    "resolutions": {
+      "approve": "兩個都上了。分發卻在不同縣市，開始了遠距離。",
+      "reject": "只有她上。他重考一年，那年他們沒有分手。",
+      "transfer": "文昌帝君接了考試，月老留下了「一起」這兩個字。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-213",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我剛創業。我沒空談戀愛，但我怕錯過。",
+    "intensity": 2,
+    "tags": ["busy"],
+    "resolutions": {
+      "approve": "月老把人排在兩年後。時間到了，人也真的出現了。",
+      "reject": "他沒錯過，因為他根本沒在看。公司倒是活下來了。",
+      "transfer": "財神接了公司，感情排隊等候。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-214",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "我要搶下週的高鐵票回家，我爸生日。月老拜託。",
+    "intensity": 2,
+    "tags": ["family"],
+    "resolutions": {
+      "approve": "搶到了。自由座站了一路，但趕上了。",
+      "reject": "沒搶到。他改坐客運，晚了三小時，蛋糕還是切了。",
+      "transfer": "轉給售票系統之神，那位表示訂票這種事要靠手速。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-215",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "月老，我最近瘦了六公斤，因為吃不下。這樣可以求什麼？",
+    "intensity": 3,
+    "tags": ["heavy", "quiet"],
+    "resolutions": {
+      "approve": "月老什麼都沒安排，只讓她那天晚上吃了一碗麵，還吃完了。",
+      "reject": "她繼續瘦。兩週後朋友強拉她去看醫生。",
+      "transfer": "轉給該管的神明，那邊回：這件事要人，不要神。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-216",
+    "category": "money",
+    "domain": "caishen",
+    "text": "我要還完學貸。還完我才敢談感情。",
+    "intensity": 2,
+    "tags": ["debt"],
+    "resolutions": {
+      "approve": "兩年還完了。他發現沒有學貸也還是不敢。",
+      "reject": "他一邊還一邊談了，對方說沒差。",
+      "transfer": "財神接單，備註：這個理由每年都有一百個人講。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-217",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "月老，我兒子明天學測。我怕他緊張。",
+    "intensity": 2,
+    "tags": ["proxy", "family"],
+    "resolutions": {
+      "approve": "他不緊張。是因為他媽那天早上沒有多問一句。",
+      "reject": "他很緊張，但考完自己走出來說「還好」。",
+      "transfer": "文昌帝君接單，附註：這位家長每年都來。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-218",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "月老，我想戒菸。我答應她了。",
+    "intensity": 2,
+    "tags": ["promise"],
+    "resolutions": {
+      "approve": "戒了。第三個月最難，他沒說，但她知道。",
+      "reject": "沒戒成。她沒生氣，只是不再問了，那更難受。",
+      "transfer": "轉給該管的神明，那邊回：意志力不能外包。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-219",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想中發票。中了就請暗戀的人吃飯。",
+    "intensity": 1,
+    "tags": ["small"],
+    "resolutions": {
+      "approve": "中了兩百。他還是請了，吃滷肉飯。對方很開心。",
+      "reject": "沒中。他自己請自己吃了滷肉飯。",
+      "transfer": "財神接了發票，飯局退回月老。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-220",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "我論文口試在下週。月老，我已經三天沒跟人講過話了。",
+    "intensity": 3,
+    "tags": ["isolated"],
+    "resolutions": {
+      "approve": "口試過了。教授問她還好嗎，她愣住，然後哭了。",
+      "reject": "口試過了，沒人問她好不好。她自己去吃了火鍋。",
+      "transfer": "文昌帝君接了論文，月老留下「沒人講話」那一段。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-221",
+    "category": "revenge",
+    "domain": "chenghuang",
+    "text": "月老，我同事搶了我的功勞，還在追我喜歡的人。",
+    "intensity": 3,
+    "tags": ["work", "bitter"],
+    "resolutions": {
+      "approve": "月老只處理感情那半。對方追不到，功勞的事還是沒還他。",
+      "reject": "什麼都沒變。但他升遷了，因為主管其實看得很清楚。",
+      "transfer": "城隍爺接了功勞，感情退回月老。分工明確。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-222",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想離職。但我怕離職了更沒人要。",
+    "intensity": 3,
+    "tags": ["work", "fear"],
+    "resolutions": {
+      "approve": "他離了。三個月後找到新工作，也遇到了人。順序跟他想的相反。",
+      "reject": "他撐了一年，撐到身體出問題才走。",
+      "transfer": "財神接單，備註：工作和姻緣不成正比，請他放心。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-223",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "我要陪我阿嬤來拜。她說她要幫我求，我說我要幫她求身體。",
+    "intensity": 2,
+    "tags": ["family", "warm"],
+    "resolutions": {
+      "approve": "兩件都辦了。阿嬤活到看見曾孫。",
+      "reject": "月老只笑，什麼都沒改。那天她們在廟口吃了刨冰。",
+      "transfer": "轉出去一半，另一半月老自己留著。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-224",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "月老，我要搶結婚場地。九月的週六，只剩一個名額。",
+    "intensity": 3,
+    "tags": ["wedding"],
+    "resolutions": {
+      "approve": "搶到了。婚禮那天下大雨，但沒人在意。",
+      "reject": "沒搶到。改辦在十月，天氣更好。",
+      "transfer": "轉給註生娘娘，那邊說：場地不是我管，但恭喜。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-225",
+    "category": "revenge",
+    "domain": "chenghuang",
+    "text": "我前任把我們的照片全部設成公開。月老，這算你管嗎？",
+    "intensity": 3,
+    "tags": ["boundary", "bitter"],
+    "resolutions": {
+      "approve": "月老越權處理了。照片撤了，但過程不太好看。",
+      "reject": "她自己截圖存證，找了律師朋友。比拜拜有效。",
+      "transfer": "城隍爺接單，回覆：這是是非，不是姻緣。做得對。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-226",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想要一份不用加班的工作，這樣我才有時間喜歡人。",
+    "intensity": 2,
+    "tags": ["work"],
+    "resolutions": {
+      "approve": "換到了。準時下班的第一週，他不知道要幹嘛。",
+      "reject": "沒換成。他開始在通勤時間看小說，也算是有了自己的時間。",
+      "transfer": "財神接單，附註：這位講到重點了。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-227",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "月老，我重考三年了。我想問的其實是我什麼時候可以放過自己。",
+    "intensity": 3,
+    "tags": ["heavy", "self"],
+    "resolutions": {
+      "approve": "那天他就放過了。隔年他考上了，成績反而更好。",
+      "reject": "他又考了一年。第四年放榜那天，他終於自己說了停。",
+      "transfer": "文昌帝君看了看，說這題不是他出的。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-228",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "我下週要去做檢查。月老，如果結果不好，我希望有人在。",
+    "intensity": 3,
+    "tags": ["fear", "heavy"],
+    "resolutions": {
+      "approve": "結果沒事。而且那天陪她去的人，後來一直都在。",
+      "reject": "結果沒事。她自己去，自己回，路上買了一杯很甜的飲料。",
+      "transfer": "轉給該管的神明。月老把「有人在」那三個字留下來了。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-229",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想要有錢到可以不用看人臉色。",
+    "intensity": 2,
+    "tags": ["blunt"],
+    "resolutions": {
+      "approve": "月老不會給錢，但那年他學會了拒絕。效果差不多。",
+      "reject": "他還是看人臉色，但開始存錢。三年後底氣不一樣了。",
+      "transfer": "財神接單，回：這願望我一天收三千件。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-230",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "月老，可以幫我搶到那家餐廳的位子嗎？我要在那裡求婚。",
+    "intensity": 2,
+    "tags": ["wedding"],
+    "resolutions": {
+      "approve": "訂到了。求婚成功，帳單很痛，但值得。",
+      "reject": "沒訂到。他改在她家樓下求婚，她哭得更慘。",
+      "transfer": "轉給訂位系統之神。那位神明說他也很想去吃。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-231",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想中樂透，但我知道這樣說很沒誠意。",
+    "intensity": 1,
+    "tags": ["blunt", "honest"],
+    "resolutions": {
+      "approve": "月老越權辦事，被財神已讀不回一整個月。",
+      "reject": "沒中，但他隔月加薪，也算一種安慰。",
+      "transfer": "財神收下，備註「至少誠實」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-232",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "月老，我要考證照，但我更想知道監考官是不是我暗戀的人。",
+    "intensity": 2,
+    "tags": ["exam", "crush"],
+    "resolutions": {
+      "approve": "兩件都成了，她監考時偷偷對他笑。",
+      "reject": "她落榜，暗戀對象也調去別的考場。",
+      "transfer": "文昌帝君只收考試那半，感情那半退回月老。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-233",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "月老，我最近常常胃痛，是不是因為太想他了。",
+    "intensity": 2,
+    "tags": ["health", "lovesick"],
+    "resolutions": {
+      "approve": "她去看了醫生，順便也想通了感情的事。",
+      "reject": "胃痛還在，跟醫生約了下次回診。",
+      "transfer": "城隍爺說胃痛是身體的事，不歸他管。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-234",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "月老，演唱會搶票開賣前一分鐘，我的網路突然變超慢。",
+    "intensity": 2,
+    "tags": ["ticket", "unlucky"],
+    "resolutions": {
+      "approve": "月老硬接了，她搶到了，位置在最後一排。",
+      "reject": "沒搶到，她跟朋友一起看轉播，也很開心。",
+      "transfer": "轉給售票系統之神，對方說伺服器不歸他管。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-235",
+    "category": "revenge",
+    "domain": "chenghuang",
+    "text": "月老，我想讓那個劈腿的前任知道我過得比他好。",
+    "intensity": 3,
+    "tags": ["revenge", "ex"],
+    "resolutions": {
+      "approve": "她真的過得很好，前任知道後傳訊息想復合，被已讀。",
+      "reject": "她決定不再理會，把力氣花在自己身上。",
+      "transfer": "城隍爺收下，備註「這案子她自己就贏了」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-236",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想知道我這次投資到底該不該進場。",
+    "intensity": 3,
+    "tags": ["investment", "anxious"],
+    "resolutions": {
+      "approve": "月老亂猜了一個方向，剛好對，財神表示這是運氣。",
+      "reject": "她觀望了一陣子，躲過一次下跌。",
+      "transfer": "財神接單，附註「這位很謹慎」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-237",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "月老，我重考第三次了，家人都不敢再問。",
+    "intensity": 3,
+    "tags": ["exam", "pressure"],
+    "resolutions": {
+      "approve": "這次上了。她在成績單前哭了很久。",
+      "reject": "又沒上，但她決定換一條路走。",
+      "transfer": "文昌帝君說這案子他跟到底，不轉。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-238",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "月老，我失眠了整整一週，是不是因為想太多。",
+    "intensity": 2,
+    "tags": ["health", "insomnia"],
+    "resolutions": {
+      "approve": "她睡著了，夢到一個很普通但很安心的夢。",
+      "reject": "還是睡不好，但她去看了睡眠門診。",
+      "transfer": "城隍爺說失眠的事他也失眠，愛莫能助。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-239",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "月老，跨年演唱會的票，我朋友都搶到了只剩我沒有。",
+    "intensity": 1,
+    "tags": ["ticket", "fomo"],
+    "resolutions": {
+      "approve": "月老出手，她搶到最後一張，朋友都很驚訝。",
+      "reject": "沒搶到，她跟著朋友的直播一起倒數。",
+      "transfer": "售票系統之神表示他自己也想搶。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-240",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我把年終獎金拿去買股票，現在很後悔。",
+    "intensity": 2,
+    "tags": ["money", "regret"],
+    "resolutions": {
+      "approve": "股票回穩了，她鬆一口氣，決定以後定期定額就好。",
+      "reject": "虧了一點，但她學到教訓，也不算壞事。",
+      "transfer": "財神接單，附註「下次先問我」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-241",
+    "category": "revenge",
+    "domain": "chenghuang",
+    "text": "月老，我想讓造謠我的同事被拆穿。",
+    "intensity": 3,
+    "tags": ["work", "rumor"],
+    "resolutions": {
+      "approve": "謠言被拆穿了，同事灰頭土臉，她沒說一句話。",
+      "reject": "謠言不了了之，她選擇不回應，時間證明一切。",
+      "transfer": "城隍爺收下，說是非題他最愛。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-242",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "月老，我要考駕照，但我很怕路考的時候緊張到失憶。",
+    "intensity": 1,
+    "tags": ["exam", "nervous"],
+    "resolutions": {
+      "approve": "她一次就過了，考官還誇她倒車入庫很穩。",
+      "reject": "她沒過，但笑著說下次一定行。",
+      "transfer": "文昌帝君表示路考不歸他管，是監理站的事。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-243",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "月老，我最近心悸，是不是因為快要遇到重要的人。",
+    "intensity": 2,
+    "tags": ["health", "hopeful"],
+    "resolutions": {
+      "approve": "心悸退了，她也真的遇到了一個讓她安心的人。",
+      "reject": "去檢查了，只是最近咖啡喝太多。",
+      "transfer": "城隍爺說心悸的事該去看醫生，不是找他。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-244",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "月老，訂不到回家的高鐵票，過年只能站著回去。",
+    "intensity": 1,
+    "tags": ["ticket", "new-year"],
+    "resolutions": {
+      "approve": "月老出手，多了一張候補票，剛好排到她。",
+      "reject": "她站著回家，但車廂裡遇到聊得來的乘客。",
+      "transfer": "轉給台鐵高鐵之神，對方說過年他也很忙。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-245",
+    "category": "money",
+    "domain": "caishen",
+    "text": "月老，我想開一間小店，但存款只夠撐三個月。",
+    "intensity": 3,
+    "tags": ["business", "risk"],
+    "resolutions": {
+      "approve": "月老亂入財神業務，店開起來了，撐過了那三個月。",
+      "reject": "她決定再存半年，反而想得更清楚。",
+      "transfer": "財神接單，附註「這位準備得很仔細」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-246",
+    "category": "revenge",
+    "domain": "chenghuang",
+    "text": "月老，我想讓欠錢不還的朋友良心發現。",
+    "intensity": 2,
+    "tags": ["money", "friendship"],
+    "resolutions": {
+      "approve": "對方真的良心發現，還了錢，兩人友誼也淡了。",
+      "reject": "錢沒還，但她學會以後借錢要寫借據。",
+      "transfer": "城隍爺收下，備註「這種案子他見多了」。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-247",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "月老，我要面試新工作，但我很怕被問到離職原因。",
+    "intensity": 2,
+    "tags": ["interview", "fear"],
+    "resolutions": {
+      "approve": "她被錄取了，面試官對離職原因只是隨口一問。",
+      "reject": "沒被錄取，但下一間她準備得更充分。",
+      "transfer": "文昌帝君表示面試的事他管，離職原因不歸他。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-248",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "月老，我最近常常頭痛，是不是工作壓力太大了。",
+    "intensity": 2,
+    "tags": ["health", "stress"],
+    "resolutions": {
+      "approve": "頭痛好了，她也順便跟主管談了工作量的事。",
+      "reject": "頭痛還在，但她開始固定運動。",
+      "transfer": "城隍爺說頭痛的事該找醫生，不是找他。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-249",
+    "category": "ticket",
+    "domain": "nobody",
+    "text": "月老，展覽的限量商品開賣，我人在上班沒辦法搶。",
+    "intensity": 1,
+    "tags": ["ticket", "work"],
+    "resolutions": {
+      "approve": "朋友幫她搶到了，下班請朋友喝飲料當謝禮。",
+      "reject": "沒搶到，但她發現二手拍賣有更划算的。",
+      "transfer": "轉給售票系統之神，對方說限量商品不算票。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "life-250",
+    "category": "revenge",
+    "domain": "chenghuang",
+    "text": "月老，我想讓那個在會議上搶我功勞的同事被看穿。",
+    "intensity": 3,
+    "tags": ["work", "credit"],
+    "resolutions": {
+      "approve": "主管後來查清楚了，功勞歸回原主。",
+      "reject": "沒被看穿，但她開始學會保留紀錄自保。",
+      "transfer": "城隍爺收下，說職場是非他最擅長。"
+    },
+    "source": "official"
+  }
+]

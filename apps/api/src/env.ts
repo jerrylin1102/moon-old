@@ -15,6 +15,8 @@ const envSchema = z.object({
   API_PORT: z.coerce.number().int().positive().default(3000),
 
   DATABASE_URL: z.string().url().optional(),
+  /** 這個 replica 的連線池上限。多開幾個 API replica 時，要跟 Postgres max_connections 對齊，避免連線耗盡 */
+  DATABASE_POOL_MAX: z.coerce.number().int().positive().default(10),
 
   // OpenAI（AI 彩蛋信眾）。沒設 key 就是關閉這個功能，不是壞掉。
   OPENAI_API_KEY: z.string().min(1).optional(),
@@ -37,6 +39,19 @@ const envSchema = z.object({
   APP_BASE_URL: z.string().url().default('http://localhost:5173'),
 
   // 寄信：沒設 SMTP_HOST 就走 log transport，功能照跑但不真的寄
+  // 社群願望投稿者頭像快取。沒設全就當作沒開，直接沿用 Google 提供的頭像網址（不阻擋登入）
+  MINIO_ENDPOINT: z.string().min(1).optional(),
+  MINIO_PORT: z.coerce.number().int().positive().default(9000),
+  MINIO_USE_SSL: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
+  MINIO_ACCESS_KEY: z.string().min(1).optional(),
+  MINIO_SECRET_KEY: z.string().min(1).optional(),
+  MINIO_BUCKET: z.string().min(1).default('moon-old-avatars'),
+  /** bucket 對外的公開讀取網址前綴（例如 CDN 或反向代理網域），沒設就用 endpoint 直接拼 */
+  MINIO_PUBLIC_URL: z.string().url().optional(),
+
   SMTP_HOST: z.string().min(1).optional(),
   SMTP_PORT: z.coerce.number().int().positive().default(587),
   SMTP_USER: z.string().optional(),
@@ -55,3 +70,6 @@ export const dbEnabled = Boolean(env.DATABASE_URL);
 export const authEnabled = Boolean(env.GOOGLE_CLIENT_ID);
 export const mailEnabled = Boolean(env.SMTP_HOST);
 export const adminEnabled = Boolean(env.ADMIN_USERNAME && env.ADMIN_PASSWORD);
+export const minioEnabled = Boolean(
+  env.MINIO_ENDPOINT && env.MINIO_ACCESS_KEY && env.MINIO_SECRET_KEY,
+);

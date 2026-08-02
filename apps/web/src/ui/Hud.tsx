@@ -11,6 +11,7 @@ import { VerdictBar } from './VerdictBar';
 import { Outcomes } from './Outcomes';
 import { RunEnded } from './RunEnded';
 import { RuleBook } from './RuleBook';
+import { SupportModal } from '../components/SupportModal';
 import { onCooldown } from '../sim/fatigue';
 import { isMuted, toggleMuted, useGameAudio } from '../audio';
 
@@ -63,9 +64,9 @@ export function Hud() {
   const setPhase = useSession((s) => s.setPhase);
   const endGame = useGame((s) => s.end);
   const focusedId = useInteraction((s) => s.focusedId);
-  const aiRareEnabled = useSession((s) => s.aiRareEnabled);
   useKeyboard(true);
-  useRareWishes(aiRareEnabled);
+  // 稀有信眾預設一律開啟；故事模式的角色是排好的名單，不需要背景預抓 AI 願望
+  useRareWishes(state?.mode !== 'story');
   useGameAudio();
   const [muted, setMutedState] = useState(isMuted);
   const [showRuleBook, setShowRuleBook] = useState(false);
@@ -150,6 +151,7 @@ export function Hud() {
 
       {!ended && <VerdictBar />}
       {!ended && <Outcomes />}
+      {!ended && <SupportModal />}
       <RunEnded />
       {showRuleBook && <RuleBook onClose={() => setShowRuleBook(false)} />}
 

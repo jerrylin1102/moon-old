@@ -6,7 +6,7 @@ import {
   DOOR_Z,
 } from '../scene/layout';
 import { addFatigue, addIncense, addResentment } from './resources';
-import type { GameState, Worshipper, WorshipperPhase } from './state';
+import type { GameState, Worshipper, WorshipperGender, WorshipperPhase } from './state';
 
 /**
  * 信眾狀態機。座標常數從 scene/layout 借用——那個檔案只有純數字，
@@ -23,6 +23,8 @@ export const LANE_X = [-4.2, -3, -1.8, -0.6, 0.6, 1.8, 3, 4.2] as const;
 const BASE_WALK_SPEED = 1.15;
 /** 走到定點的容許誤差 */
 const ARRIVE_EPSILON = 0.08;
+/** 一般離場時，前段彎繞要花多少秒才收斂回直線 */
+const LEAVE_CURVE_DURATION = 1.6;
 
 /** 停留型階段的長度（秒） */
 const PHASE_DURATION: Partial<Record<WorshipperPhase, number>> = {
@@ -49,11 +51,25 @@ export function phaseDuration(phase: WorshipperPhase): number | undefined {
   return PHASE_DURATION[phase];
 }
 
+/**
+ * 決定下一位信眾的性別：哪邊生成得少，就提高機率補回來，
+ * 避免單場遊戲全男或全女（用戶要求機率大致平衡）。
+ * 差距在 0-1 內維持 50/50；差距 ≥2 時，80% 機率補少的那邊。
+ */
+export function pickGender(state: GameState): WorshipperGender {
+  const diff = state.spawnedMale - state.spawnedFemale;
+  if (Math.abs(diff) < 2) return Math.random() < 0.5 ? 'male' : 'female';
+  const under: WorshipperGender = diff > 0 ? 'female' : 'male';
+  const over: WorshipperGender = diff > 0 ? 'male' : 'female';
+  return Math.random() < 0.8 ? under : over;
+}
+
 export function createWorshipper(
   state: GameState,
   wishId: string,
   lane: number,
   patience: number,
+  gender: WorshipperGender,
 ): Worshipper {
   const seed = Math.random();
   const laneX = LANE_X[lane] ?? 0;
@@ -70,6 +86,7 @@ export function createWorshipper(
     speed: BASE_WALK_SPEED * (0.85 + seed * 0.35),
     facing: 0,
     seed,
+    gender,
   };
 }
 
@@ -88,8 +105,11 @@ function targetFor(w: Worshipper): [number, number] | null {
   const laneX = LANE_X[w.lane] ?? 0;
 
   switch (w.phase) {
-    case 'entering':
-      return [laneX, DOOR_Z + 2];
+    case 'entering': {
+      // 每個人進門的落點依 seed 略為錯開，不然同一走道進來的人永遠走同一條線，像排練過
+      const entryDrift = jitterOf(w.seed, 2.3) * 0.9;
+      return [laneX + entryDrift, DOOR_Z + 2];
+    }
     case 'toCenser':
       // 往香爐靠攏，但保留走道的橫向偏移，不要全部疊在中線
       return [laneX * 0.32, CENSER_POSITION[2] - 1.5];
@@ -103,8 +123,18 @@ function targetFor(w: Worshipper): [number, number] | null {
       const scatterZ = jitterOf(w.seed, 4.2) * 0.6;
       return [laneX * 0.62 + scatterX, ALTAR_Z - 2.8 + scatterZ];
     }
-    case 'leaving':
-      return [laneX, DOOR_Z - 1.5];
+    case 'leaving': {
+      // 紅線配對成功的兩人，離場目標收斂到共同算好的中點，牽手並肩走出去——
+      // 這個目標本身就跟平常離場不同，不用再疊加隨機彎繞，保持乾淨的收斂路徑。
+      if (w.exitX !== undefined) return [w.exitX, DOOR_Z - 1.5];
+
+      // 一般離場：剛轉身的前段先往一個依 seed 偏移的中繼點彎，快到門口時才收斂回直線，
+      // 不然所有人離場都是同一條回頭直線，跟進門時的隊形一樣死板。
+      const leaveDrift = jitterOf(w.seed, 6.1) * 1.1;
+      const curveProgress = Math.min(1, w.phaseTime / LEAVE_CURVE_DURATION);
+      const targetX = laneX + leaveDrift * (1 - curveProgress);
+      return [targetX, DOOR_Z - 1.5];
+    }
     default:
       return null;
   }

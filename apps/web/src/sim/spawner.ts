@@ -1,10 +1,14 @@
 import type { GameMode } from '@moon/shared';
 import { DIFFICULTY_PRESETS, type GameState } from './state';
-import { createWorshipper, LANE_X } from './worshipper';
+import { createWorshipper, LANE_X, pickGender } from './worshipper';
 
-/** 模擬層需要的外部資料：願望要挑哪一則，由呼叫端（前端願望池）決定 */
+/**
+ * 模擬層需要的外部資料：願望要挑哪一則，由呼叫端（前端願望池）決定。
+ * `pickWishId` 吃目前的 state 是為了讓願望池能讀寫像 `supportNpcShown`
+ * 這種「這場出現過了沒」的旗標（例如贊助作者的彩蛋信眾同場只出現一次）。
+ */
 export interface SimDeps {
-  pickWishId: () => string;
+  pickWishId: (state: GameState) => string;
   intensityOf: (wishId: string) => number;
 }
 
@@ -59,6 +63,9 @@ export function updateSpawner(state: GameState, dt: number, deps: SimDeps): void
   }
 
   const patience = DIFFICULTY_PRESETS[state.difficulty].patience;
-  state.worshippers.push(createWorshipper(state, deps.pickWishId(), lane, patience));
+  const gender = pickGender(state);
+  if (gender === 'male') state.spawnedMale += 1;
+  else state.spawnedFemale += 1;
+  state.worshippers.push(createWorshipper(state, deps.pickWishId(state), lane, patience, gender));
   state.nextSpawnIn = spawnInterval(state);
 }

@@ -41,6 +41,16 @@ export async function fetchApprovedWishes(): Promise<Wish[]> {
   });
 }
 
+/** 官方題庫（資料庫版）。拉不到就繼續用打包進 bundle 的 JSON 快照 */
+export async function fetchWishBank(): Promise<Wish[]> {
+  const data = await request<{ wishes: unknown[] }>('/api/wish-bank');
+  if (!data) return [];
+  return data.wishes.flatMap((raw) => {
+    const parsed = wishSchema.safeParse(raw);
+    return parsed.success ? [parsed.data] : [];
+  });
+}
+
 export type SubmitResult =
   | { ok: true; message: string }
   | { ok: false; message: string }

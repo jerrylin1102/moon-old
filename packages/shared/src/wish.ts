@@ -51,13 +51,15 @@ export const wishSchema = z.object({
   }),
   /** 模式 B：隔天回訪的後續願望 id */
   followUp: z.string().optional(),
-  /** 來源：官方預寫池 / 玩家投稿 / AI 生成的稀有信眾 */
-  source: z.enum(['official', 'community', 'ai']).default('official'),
+  /** 來源：官方預寫池 / 玩家投稿 / AI 生成的稀有信眾 / 贊助作者的彩蛋信眾 */
+  source: z.enum(['official', 'community', 'ai', 'support']).default('official'),
   /**
    * 社群願望在資料庫裡的 id。有這個欄位才回報得了互動，
    * 官方池與 AI 願望沒有主人，所以是 undefined。
    */
   submissionId: z.string().uuid().optional(),
+  /** 社群願望投稿者的頭像網址，貼在 NPC 臉上讓玩家知道這則願望來自社群 */
+  avatarUrl: z.string().url().optional(),
 });
 
 export type Wish = z.output<typeof wishSchema>;

@@ -1,4 +1,4 @@
-import type { DeityDomain, Divination, Verdict, WishCategory } from '@moon/shared';
+import type { DeityDomain, Divination, Verdict, Wish, WishCategory } from '@moon/shared';
 import {
   DIFFICULTY_PRESETS,
   type GameState,
@@ -7,6 +7,8 @@ import {
 } from './state';
 import { addFatigue, addMerit, addResentment, spendIncense } from './resources';
 import { complaintFor } from './rulebook';
+import { LANE_X } from './worshipper';
+import { addScoreBonus } from './score';
 
 /**
  * 月老的回應。全部是純函式，只改動傳進來的 state——
@@ -18,6 +20,8 @@ export interface WishInfo {
   category: WishCategory;
   domain: DeityDomain;
   resolutions: Record<Verdict, string>;
+  /** 願望來源：稀有（AI）／社群信眾的分數加成靠這個欄位判斷，見 sim/score.ts */
+  source: Wish['source'];
 }
 
 /** 施展神通要花的香火 */
@@ -56,6 +60,7 @@ export function resolveVerdict(
 ): void {
   state.handled += 1;
   const mine = isMyDepartment(wish);
+  const meritBefore = state.merit;
 
   switch (verdict) {
     case 'approve':
@@ -86,6 +91,10 @@ export function resolveVerdict(
       }
       break;
   }
+
+  // 這次結案原本會貢獻多少分（跟 computeScore 的權重對齊），依願望來源套用加成
+  const meritDelta = state.merit - meritBefore;
+  addScoreBonus(state, 10 + meritDelta * 2, wish.source);
 
   const tone: 'good' | 'bad' | 'neutral' =
     verdict === 'approve' ? 'good' : verdict === 'transfer' ? (mine ? 'bad' : 'good') : 'neutral';
@@ -119,6 +128,7 @@ export function castDivination(
       state.handled += 1;
       addMerit(state, wish.intensity);
       addFatigue(state, 2);
+      addScoreBonus(state, 10 + wish.intensity * 2, wish.source);
       pushOutcome(state, '聖筊。他磕了三個頭，走的時候是笑的。', 'good');
       record(state, w, 'sheng');
       dismiss(w);
@@ -128,6 +138,7 @@ export function castDivination(
       state.handled += 1;
       addFatigue(state, 1);
       addResentment(state, wish.intensity);
+      addScoreBonus(state, 10, wish.source);
       pushOutcome(state, '陰筊。他在門口站了很久才走。', 'neutral');
       record(state, w, 'yin');
       dismiss(w);
@@ -168,13 +179,27 @@ export function castBlessing(state: GameState): boolean {
   return true;
 }
 
-/** 牽紅線：把兩個人接起來。只有兩邊都是感情事才算配對成功 */
+/**
+ * 兩邊 intensity 越接近，牽線成功率越高；鎖在 35%~85% 之間，
+ * 避免變成純看運氣（太低）或有資格就必成（太高，失去機率配對的意義）。
+ */
+function matchChance(intensityA: number, intensityB: number): number {
+  const closeness = 2 - Math.abs(intensityA - intensityB);
+  return Math.min(0.85, Math.max(0.35, 0.55 + closeness * 0.1));
+}
+
+/**
+ * 牽紅線：把兩個人接起來。兩邊都是感情事才有資格配對，
+ * 有資格之後還要看緣分（機率）——不是每次牽了就一定成。
+ * `rng` 預設吃 `Math.random`，測試時可以換成決定性的假亂數。
+ */
 export function tieRedThread(
   state: GameState,
   a: Worshipper,
   b: Worshipper,
   wishA: WishInfo,
   wishB: WishInfo,
+  rng: () => number = Math.random,
 ): boolean {
   if (a.id === b.id) return false;
 
@@ -186,13 +211,33 @@ export function tieRedThread(
     return false;
   }
 
+  if (rng() >= matchChance(wishA.intensity, wishB.intensity)) {
+    addResentment(state, 2);
+    addFatigue(state, 2);
+    pushOutcome(state, '紅線牽是牽了，兩人卻話不投機，各自轉身走掉。', 'bad');
+    return false;
+  }
+
   state.handled += 2;
   state.matched += 1;
   addMerit(state, 6);
   addFatigue(state, 4);
+  // 這次結案的分數（2 個 handled + 1 個 matched + 6 點功德）由兩人平分，
+  // 各自依自己的願望來源套用加成——稀有／社群信眾只讓「自己那一半」多賺
+  const totalBasePoints = 10 * 2 + 40 + 6 * 2;
+  addScoreBonus(state, totalBasePoints / 2, wishA.source);
+  addScoreBonus(state, totalBasePoints / 2, wishB.source);
   pushOutcome(state, '紅線接上了。他們在廟門口撞到彼此的傘。', 'good');
   record(state, a, 'thread');
   record(state, b, 'thread');
+
+  // 配對成功：兩人牽手一起走出廟門，離場目標收斂成兩條走道的中點
+  const exitX = ((LANE_X[a.lane] ?? 0) + (LANE_X[b.lane] ?? 0)) / 2;
+  a.partnerId = b.id;
+  b.partnerId = a.id;
+  a.exitX = exitX;
+  b.exitX = exitX;
+
   dismiss(a);
   dismiss(b);
   return true;

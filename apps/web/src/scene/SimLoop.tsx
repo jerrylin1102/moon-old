@@ -19,8 +19,7 @@ export function SimLoop() {
   // 模式 B 的名單是值班開始時就排好的（見 story.ts），這裡只依當下模式決定要從哪個池子挑
   const deps = useMemo<SimDeps>(
     () => ({
-      pickWishId: () =>
-        useGame.getState().state?.mode === 'story' ? pickStoryWishId() : pickWishId(),
+      pickWishId: (state) => (state.mode === 'story' ? pickStoryWishId() : pickWishId(state)),
       intensityOf,
     }),
     [],

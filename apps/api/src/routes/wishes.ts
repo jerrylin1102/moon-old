@@ -12,6 +12,11 @@ import { ipHash } from '../ipHash';
 import { checkRules, shouldAutoReject } from '../moderation/rules';
 import { reviewWithLlm } from '../moderation/llm';
 import { currentUser } from '../auth/session';
+import { cached, invalidate } from '../ttlCache';
+
+/** 已核准願望列表的快取時間：內容只會因審核／投稿／收回而變，不需要即時 */
+const APPROVED_CACHE_KEY = 'wishes:approved';
+const APPROVED_CACHE_TTL_MS = 60_000;
 
 /** 一個人同時最多能有幾則願望在廟裡 */
 export const WISH_LIMIT = 50;
@@ -46,9 +51,14 @@ function toWish(row: {
   text: string;
   category: WishCategory;
   resolutions: unknown;
+  authorAvatarUrl: string | null;
 }): Wish {
   const parsed = storedResolutionsSchema.safeParse(row.resolutions);
   const resolutions = parsed.success ? parsed.data : FALLBACK_RESOLUTIONS;
+  // Google 頭像網址偶爾會是相對值或空字串，safeParse 失敗就當作沒有頭像，不讓整包回應壞掉
+  const avatarUrl = z.string().url().safeParse(row.authorAvatarUrl).success
+    ? (row.authorAvatarUrl as string)
+    : undefined;
 
   return {
     id: `community-${row.id}`,
@@ -60,6 +70,7 @@ function toWish(row: {
     tags: ['community'],
     resolutions,
     source: 'community',
+    avatarUrl,
   };
 }
 
@@ -69,23 +80,31 @@ export async function wishRoutes(app: FastifyInstance): Promise<void> {
    * 只回 approved 且未被作者收回的——pending 與 rejected 的內容永遠不會離開資料庫。
    */
   app.get('/api/wishes/approved', async (_request, reply) => {
-    if (!db) return reply.code(503).send({ error: '這台沒有接資料庫' });
+    const dbConn = db;
+    if (!dbConn) return reply.code(503).send({ error: '這台沒有接資料庫' });
 
-    const rows = await db
-      .select({
-        id: schema.submissions.id,
-        text: schema.submissions.text,
-        category: schema.submissions.category,
-        resolutions: schema.submissions.resolutions,
-      })
-      .from(schema.submissions)
-      .where(
-        and(eq(schema.submissions.status, 'approved'), isNull(schema.submissions.deletedAt)),
-      )
-      .orderBy(desc(schema.submissions.createdAt))
-      .limit(500);
+    const wishes = await cached(APPROVED_CACHE_KEY, APPROVED_CACHE_TTL_MS, async () => {
+      const rows = await dbConn
+        .select({
+          id: schema.submissions.id,
+          text: schema.submissions.text,
+          category: schema.submissions.category,
+          resolutions: schema.submissions.resolutions,
+          // 匿名投稿（authorId 為 null）就沒有頭像可 join，留 null 即可
+          authorAvatarUrl: schema.users.avatarUrl,
+        })
+        .from(schema.submissions)
+        .leftJoin(schema.users, eq(schema.users.id, schema.submissions.authorId))
+        .where(
+          and(eq(schema.submissions.status, 'approved'), isNull(schema.submissions.deletedAt)),
+        )
+        .orderBy(desc(schema.submissions.createdAt))
+        .limit(500);
 
-    return { wishes: rows.map(toWish) };
+      return rows.map(toWish);
+    });
+
+    return { wishes };
   });
 
   /**
@@ -239,6 +258,7 @@ export async function wishRoutes(app: FastifyInstance): Promise<void> {
         autoFlags: { rules, llm },
         ipHash: ipHash(request),
       });
+      invalidate(APPROVED_CACHE_KEY);
 
       return reply.code(201).send({
         status: 'approved',
@@ -269,6 +289,7 @@ export async function wishRoutes(app: FastifyInstance): Promise<void> {
       .returning({ id: schema.submissions.id });
 
     if (deleted.length === 0) return reply.code(404).send({ error: '找不到這則願望' });
+    invalidate(APPROVED_CACHE_KEY);
     return { ok: true };
   });
 }

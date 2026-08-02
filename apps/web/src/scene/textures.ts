@@ -26,6 +26,26 @@ export function useSoftDotTexture() {
   }, []);
 }
 
+/** 紅線配對成功的愛心粒子貼圖：兩個圓疊一個倒三角，純 canvas 2D path 畫出愛心輪廓 */
+export function useHeartTexture() {
+  return useMemo(() => {
+    const size = 64;
+    const canvas = makeCanvas(size);
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const s = size;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(s * 0.5, s * 0.82);
+      ctx.bezierCurveTo(s * 0.1, s * 0.55, s * 0.08, s * 0.18, s * 0.5, s * 0.32);
+      ctx.bezierCurveTo(s * 0.92, s * 0.18, s * 0.9, s * 0.55, s * 0.5, s * 0.82);
+      ctx.closePath();
+      ctx.fill();
+    }
+    return new CanvasTexture(canvas);
+  }, []);
+}
+
 /**
  * 門外天光：中央亮、邊緣散掉的橢圓光暈。
  * 用純色平面會像一塊投影布，加上漸層才像光灑進門。

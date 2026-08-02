@@ -1,14 +1,17 @@
 import Fastify from 'fastify';
 import rateLimit from '@fastify/rate-limit';
 import cookie from '@fastify/cookie';
-import { aiEnabled, authEnabled, dbEnabled, env, mailEnabled } from './env';
+import { aiEnabled, authEnabled, dbEnabled, env, mailEnabled, minioEnabled } from './env';
+import { ensureAvatarBucket } from './storage/minio';
 import { authRoutes } from './routes/auth';
 import { interactionRoutes } from './routes/interactions';
 import { commentRoutes } from './routes/comments';
 import { startNotificationLoop } from './mail/dispatch';
 import { closeDb, pingDb, runMigrations } from './db/client';
+import { seedWishBankIfEmpty } from './db/seedWishBank';
 import { verifyModel } from './openai';
 import { wishRoutes } from './routes/wishes';
+import { wishBankRoutes } from './routes/wishBank';
 import { scoreRoutes } from './routes/scores';
 import { adminRoutes } from './routes/admin';
 import { blessingRoutes } from './routes/blessing';
@@ -34,6 +37,7 @@ app.get('/health', async () => ({
     aiReason: started.aiReason,
     auth: authEnabled,
     mail: mailEnabled,
+    minio: minioEnabled,
   },
 }));
 
@@ -46,6 +50,7 @@ const start = async () => {
 
     await app.register(authRoutes);
     await app.register(wishRoutes);
+    await app.register(wishBankRoutes);
     await app.register(interactionRoutes);
     await app.register(commentRoutes);
     await app.register(scoreRoutes);
@@ -57,6 +62,7 @@ const start = async () => {
       if (started.db) {
         await runMigrations();
         app.log.info('資料庫 migration 完成');
+        await seedWishBankIfEmpty(app.log);
         // 通知排程：即時信在入列時就會寄，這個迴圈負責彙總與補漏
         notificationLoop = startNotificationLoop(app.log);
         if (!mailEnabled) app.log.warn('未設定 SMTP_HOST，通知信只會寫進 log 不會真的寄出');
@@ -65,6 +71,12 @@ const start = async () => {
       }
     } else {
       app.log.warn('未設定 DATABASE_URL，投稿與排行榜停用');
+    }
+
+    if (minioEnabled) {
+      await ensureAvatarBucket(app.log);
+    } else {
+      app.log.warn('未設定 MinIO，社群願望頭像會直接沿用 Google 提供的網址，不做快取');
     }
 
     if (aiEnabled) {

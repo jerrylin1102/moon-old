@@ -13,7 +13,7 @@ let pool: pg.Pool | null = null;
 let database: ReturnType<typeof drizzle<typeof schema>> | null = null;
 
 if (env.DATABASE_URL) {
-  pool = new pg.Pool({ connectionString: env.DATABASE_URL, max: 10 });
+  pool = new pg.Pool({ connectionString: env.DATABASE_URL, max: env.DATABASE_POOL_MAX });
   database = drizzle(pool, { schema });
 }
 

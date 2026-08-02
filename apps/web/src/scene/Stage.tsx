@@ -1,10 +1,11 @@
 import { Canvas } from '@react-three/fiber';
 import { DeityCamera } from './DeityCamera';
-import { Temple } from './Temple';
+import { Temple } from './temple';
 import { Worshippers } from './Worshippers';
 import { Offerings } from './Offerings';
 import { WishBubbles } from './WishBubbles';
 import { RedThread } from './RedThread';
+import { HeartBurst } from './effects/HeartBurst';
 import { LightShafts } from './LightShafts';
 import { Effects } from './Effects';
 import { DevStats } from './DevStats';
@@ -58,6 +59,7 @@ export function Stage() {
       <Offerings />
       <WishBubbles />
       <RedThread />
+      <HeartBurst />
       <LightShafts />
       <SimLoop />
       <Effects />

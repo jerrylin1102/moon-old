@@ -46,8 +46,18 @@ export function VerdictBar() {
   if (!state || !w || !wish || !isWaiting(w)) return null;
   const cooling = onCooldown(state);
 
+  // 贊助作者的彩蛋信眾：點「准」不直接結案，先跳贊助資訊視窗，關閉視窗時才真正收尾
+  const approve =
+    wish.source === 'support'
+      ? () => {
+          const s = useGame.getState().state;
+          if (s) s.paused = true;
+          useInteraction.getState().openSupportPrompt(w.id);
+        }
+      : () => applyVerdict(w.id, 'approve');
+
   const verdictButtons = [
-    { label: '准', hint: '1', onClick: () => applyVerdict(w.id, 'approve') },
+    { label: '准', hint: '1', onClick: approve },
     { label: '駁', hint: '2', onClick: () => applyVerdict(w.id, 'reject') },
     { label: '轉單', hint: '3', onClick: () => applyVerdict(w.id, 'transfer') },
   ];
@@ -64,7 +74,15 @@ export function VerdictBar() {
     <div className="absolute inset-x-0 bottom-28 flex justify-center px-4 sm:bottom-10">
       <div className="w-full max-w-xl rounded-xl border border-temple-gold/40 bg-black/80 p-4 backdrop-blur-sm">
         <div className="flex items-baseline justify-between text-[11px] tracking-widest text-incense/55">
-          <span>{CATEGORY_LABEL[wish.category]}</span>
+          <span className="flex items-center gap-1.5">
+            <span
+              className={w.gender === 'female' ? 'text-pink-300' : 'text-sky-300'}
+              aria-label={w.gender === 'female' ? '女性信眾' : '男性信眾'}
+            >
+              {w.gender === 'female' ? '♀' : '♂'}
+            </span>
+            {CATEGORY_LABEL[wish.category]}
+          </span>
           <span>耐心 {Math.max(0, Math.ceil(w.patience))} 秒</span>
         </div>
         <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-incense">{wish.text}</p>
@@ -128,7 +146,7 @@ export function VerdictBar() {
             ? '手還沒回過神……（太累了，動作變慢）'
             : castingJiao
               ? '笑筊不算回答——他會重新問一次，而你會更累。'
-              : '牽紅線：從一位信眾拖到另一位。兩邊都是感情事才算配對。'}
+              : '牽紅線：從一位信眾拖到另一位。兩邊都是感情事才有資格配對，配不配得成還要看緣分。'}
         </p>
       </div>
     </div>

@@ -348,5 +348,285 @@
       "transfer": "轉不出去。這一單只有月老自己收得到。"
     },
     "source": "official"
+  },
+  {
+    "id": "absurd-326",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個完全不會打呼、也不會半夜找食物的伴侶。就這樣。",
+    "intensity": 1,
+    "tags": ["spec-sheet"],
+    "resolutions": {
+      "approve": "找到了。代價是對方超級淺眠，家裡不能有一點聲音。",
+      "reject": "她自己戴上了耳塞，問題解決一半。",
+      "transfer": "沒有神明處理打呼問題，那是耳鼻喉科的事。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-327",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要跟我家狗狗結為異姓兄弟，不用登記，意思到就好。",
+    "intensity": 1,
+    "tags": ["pet", "joke"],
+    "resolutions": {
+      "approve": "狗狗完全沒發現自己升官了，繼續討飯吃。",
+      "reject": "她自己默默認了這個兄弟，狗狗毫不知情。",
+      "transfer": "沒有神明管狗，狗自己是自己的神。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-328",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個看到我按讚都覺得很開心的伴侶，門檻很低吧。",
+    "intensity": 1,
+    "tags": ["low-bar"],
+    "resolutions": {
+      "approve": "找到了，對方連她已讀都覺得是種浪漫。",
+      "reject": "她自己按讚自己的貼文，也挺開心的。",
+      "transfer": "社群媒體之神表示這案子他天天處理。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-329",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要跟我的枕頭永遠在一起，它從不跟我吵架。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "枕頭陪了她十年，最後洗到變形，她哭著換新的。",
+      "reject": "枕頭默默待在床上，什麼都沒發生。",
+      "transfer": "沒有神明管枕頭，枕頭自己很滿足。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-330",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個吵架永遠讓我贏、但心裡不會不平衡的伴侶。",
+    "intensity": 2,
+    "tags": ["spec-sheet"],
+    "resolutions": {
+      "approve": "找到了，對方是那種吵完就忘記的體質，堪稱奇蹟。",
+      "reject": "她自己練習了深呼吸法，吵架次數變少了。",
+      "transfer": "沒有神明能保證誰吵架一定贏。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-331",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要跟便利商店的關東煮阿姨結拜，她總是多給我一塊蘿蔔。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "結拜成功，阿姨從此都幫她多留一塊黑輪。",
+      "reject": "阿姨還是照樣多給蘿蔔，只是沒有結拜這回事。",
+      "transfer": "沒有神明管關東煮，蘿蔔自己也很佛系。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-332",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我想要一個永遠不會滑坡不會沒電的手機電池，這算感情嗎？",
+    "intensity": 1,
+    "tags": ["meta"],
+    "resolutions": {
+      "approve": "手機電池撐了整整兩年沒衰退，堪稱神蹟。",
+      "reject": "電池照樣衰退，她買了行動電源，也是一種陪伴。",
+      "transfer": "3C 之神表示這根本不歸感情管。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-333",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個跟我一樣熱愛半夜三點吃泡麵的靈魂伴侶。",
+    "intensity": 1,
+    "tags": ["food", "joke"],
+    "resolutions": {
+      "approve": "找到了，兩人半夜三點一起吃，胃都不太好。",
+      "reject": "她自己一個人吃，泡麵香氣依舊治癒。",
+      "transfer": "沒有神明管半夜吃泡麵，那是胃的事。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-334",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要交往對象永遠覺得我放的屁很可愛。門檻真的不高。",
+    "intensity": 1,
+    "tags": ["low-bar", "joke"],
+    "resolutions": {
+      "approve": "找到了，對方甚至覺得那是一種幽默感。",
+      "reject": "她自己習慣了，反正也沒人在旁邊。",
+      "transfer": "沒有神明想接這一單，連城隍爺都搖頭。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-335",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個永遠記得我生日、但完全不會辦驚喜派對的伴侶。",
+    "intensity": 1,
+    "tags": ["spec-sheet"],
+    "resolutions": {
+      "approve": "找到了，對方只會平淡地說聲生日快樂，剛剛好。",
+      "reject": "她自己買了蛋糕，一個人也過得很好。",
+      "transfer": "註生娘娘表示生日的事不歸她管。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-336",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個看我追劇追到哭也不會覺得奇怪的伴侶。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "找到了，對方遞面紙的速度比她哭得還快。",
+      "reject": "她自己準備了整包面紙，一個人哭也很暢快。",
+      "transfer": "沒有神明管追劇哭點，那是編劇的責任。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-337",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個跟我一樣覺得棉被是全世界最好朋友的伴侶。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "找到了，兩人搶棉被搶得很有默契，各退一半。",
+      "reject": "棉被還是她一個人獨享，也沒什麼不好。",
+      "transfer": "沒有神明管棉被，棉被自成一派。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-338",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個聽我抱怨老闆聽一百次都不會不耐煩的朋友。",
+    "intensity": 1,
+    "tags": ["work", "joke"],
+    "resolutions": {
+      "approve": "找到了，對方甚至還記得她老闆的名字。",
+      "reject": "她自己買了日記本，把抱怨都寫進去。",
+      "transfer": "城隍爺表示職場抱怨他聽得懂，但這不算冤屈。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-339",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要跟我養的多肉植物心靈相通，它最近好像很憂鬱。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "多肉活得好好的，是她自己想太多。",
+      "reject": "多肉還是老樣子，安靜地曬太陽。",
+      "transfer": "沒有神明懂多肉的心情，包括月老。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-340",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個看我化妝要一小時也不會催我的伴侶。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "找到了，對方在旁邊滑手機滑得比她化妝還久。",
+      "reject": "她自己練到二十分鐘搞定，也算進步。",
+      "transfer": "沒有神明管化妝速度，那是熟練度的事。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-341",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個聽我唱歌走音也覺得好聽的伴侶。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "找到了，對方是真的五音不全，聽不出她走音。",
+      "reject": "她自己去上了歌唱課，走音變少了。",
+      "transfer": "沒有神明管音準，那是耳朵的事。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-342",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個永遠不會偷吃我放在冰箱的食物的室友。",
+    "intensity": 2,
+    "tags": ["roommate", "joke"],
+    "resolutions": {
+      "approve": "室友真的一口沒動，只是因為他自己也在減肥。",
+      "reject": "食物還是被吃了，但室友主動買了新的賠她。",
+      "transfer": "沒有神明管冰箱，冰箱自己有它的規矩。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-343",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個看我玩手遊課金也不會唸我的伴侶。",
+    "intensity": 1,
+    "tags": ["gaming", "joke"],
+    "resolutions": {
+      "approve": "找到了，對方甚至陪她一起課，兩人一起破產。",
+      "reject": "她自己設了每月課金上限，錢包鬆了一口氣。",
+      "transfer": "財神表示課金的事他管，但這案子太離譜。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-344",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要一個永遠猜得到我想吃什麼的伴侶，我自己都常常不知道。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "找到了，對方猜對的機率比她自己還高。",
+      "reject": "她自己學會了每次先看菜單再決定，也挺好。",
+      "transfer": "沒有神明猜得到別人想吃什麼，包括月老。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "absurd-345",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我要跟我的水壺結為知己，它陪我上班比誰都久。",
+    "intensity": 1,
+    "tags": ["joke"],
+    "resolutions": {
+      "approve": "水壺陪了她五年，最後蓋子壞了，她鄭重道別。",
+      "reject": "水壺還是老樣子，沉默地裝水。",
+      "transfer": "沒有神明管水壺，水壺自己心裡有數。"
+    },
+    "source": "official"
   }
 ]

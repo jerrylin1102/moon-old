@@ -3,9 +3,10 @@ import { OAuth2Client } from 'google-auth-library';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db, schema } from '../db/client';
-import { authEnabled, env } from '../env';
+import { authEnabled, env, minioEnabled } from '../env';
 import { clearSession, currentUser, identityCode, issueSession } from '../auth/session';
 import { checkNickname } from '../moderation/rules';
+import { cacheAvatar } from '../storage/minio';
 
 const client = env.GOOGLE_CLIENT_ID ? new OAuth2Client(env.GOOGLE_CLIENT_ID) : null;
 
@@ -87,6 +88,18 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       if (!user) return reply.code(500).send({ error: '建立帳號失敗' });
 
       await issueSession(reply, user.id);
+
+      // 頭像快取進 MinIO：非同步進行，不擋這次登入的回應。
+      // 這次回應仍然是 Google 的原始網址，快取完成後下次登入／讀取就會是 MinIO 網址。
+      if (minioEnabled && payload.picture) {
+        const userId = user.id;
+        void cacheAvatar(payload.picture, userId).then((cachedUrl) => {
+          if (cachedUrl && db) {
+            void db.update(schema.users).set({ avatarUrl: cachedUrl }).where(eq(schema.users.id, userId));
+          }
+        });
+      }
+
       return { user: publicUser(user) };
     },
   );

@@ -6,11 +6,14 @@ export function Modal({
   onClose,
   children,
   width = 'max-w-sm',
+  closeIcon = false,
 }: {
   title: string;
   onClose: () => void;
   children: ReactNode;
   width?: string;
+  /** true 時右上角關閉鈕改成 × 符號，取代預設的「關閉」文字 */
+  closeIcon?: boolean;
 }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -34,9 +37,14 @@ export function Modal({
           <button
             type="button"
             onClick={onClose}
-            className="text-sm text-incense/40 transition hover:text-incense/80"
+            aria-label="關閉"
+            className={
+              closeIcon
+                ? 'text-xl leading-none text-incense/50 transition hover:text-incense/90'
+                : 'text-sm text-incense/40 transition hover:text-incense/80'
+            }
           >
-            關閉
+            {closeIcon ? '×' : '關閉'}
           </button>
         </div>
         <div className="mt-4">{children}</div>

@@ -1,0 +1,189 @@
+[
+  {
+    "id": "story-01",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，我們分手三年了。\n昨天在夜市又碰到他，他手上拎著我最愛吃的那攤雞排，愣了兩秒才叫我的名字。\n我該不該傳訊息給他？",
+    "intensity": 2,
+    "tags": ["story", "reunion"],
+    "resolutions": {
+      "approve": "她傳了。他秒讀秒回：『欸，妳還住老地方嗎？』",
+      "reject": "她刪掉打好的字，轉身去買了兩份雞排——一份給自己，一份放進冰箱。",
+      "transfer": "城隍爺翻了白眼：這是姻緣，不是冤屈，退回來了。"
+    },
+    "followUp": "story-01b",
+    "source": "official"
+  },
+  {
+    "id": "story-01b",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，又是我。上次的事你也看到後續了。\n現在的問題是——他約我下週六一起看電影，但那天我早就跟姐妹淘約好聚餐了。\n兩邊我都不想放掉，你說我該選哪邊？",
+    "intensity": 1,
+    "tags": ["story", "reunion", "day2"],
+    "resolutions": {
+      "approve": "她推了聚餐。姐妹淘在群組裡瘋狂洗版，但沒有人真的生氣。",
+      "reject": "她選了聚餐，電影改到隔週，兩邊都沒耽誤——只是他等訊息等了一整天。",
+      "transfer": "轉去問財神：訂位喬時間不是我的業務，公文退回。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "story-02",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "我跟他因為外派，要分隔兩地一年。\n朋友都說遠距離撐不久，我心裡也在打鼓。\n月老，我該讓他去嗎？我怕自己一鬆手，人就真的沒了。",
+    "intensity": 3,
+    "tags": ["story", "distance"],
+    "resolutions": {
+      "approve": "她鬆手了。他們約好每天睡前十分鐘視訊，一次都沒斷過。",
+      "reject": "他真的留下來了，只是升遷的事，兩人後來誰都沒再提起。",
+      "transfer": "文昌帝君回文：外派升遷歸我管，感情的事你自己看著辦。"
+    },
+    "followUp": "story-02b",
+    "source": "official"
+  },
+  {
+    "id": "story-02b",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "外派滿半年了。\n上次你陪我撐過那個決定，現在他說想乾脆申請當地的長期職位，一待可能就是好幾年。\n我開始猶豫，要不要辭掉這裡的工作過去陪他。",
+    "intensity": 2,
+    "tags": ["story", "distance", "day2"],
+    "resolutions": {
+      "approve": "她遞了辭呈。落地那天他捧著一束花在機場等，花有點蔫，但人是準時的。",
+      "reject": "她沒辭職。他們改成三個月飛一次，機票錢兩人平分。",
+      "transfer": "註生娘娘表示這是遷徙不是姻緣，這單不歸她。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "story-03",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "我媽一直嫌他家境不好，逼我分手，每次吵架最後都會吵到這個。\n他自己倒是沒說什麼，只是最近見面次數變少了。\n月老，這段感情，你覺得撐得下去嗎？",
+    "intensity": 3,
+    "tags": ["story", "family"],
+    "resolutions": {
+      "approve": "她把男友帶回家吃了一頓飯，媽媽全程沒說話，但飯後多包了一份滷味讓他帶走。",
+      "reject": "她照媽媽的意思分了，但那陣子家裡的飯桌，比以前安靜很多。",
+      "transfer": "城隍爺接下這單：家務事本來就是我的專業，這個交給我。"
+    },
+    "followUp": "story-03b",
+    "source": "official"
+  },
+  {
+    "id": "story-03b",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "月老，上次的事之後，我媽的態度軟化了一點點，只是還沒鬆口。\n他這禮拜想正式提結婚，說要當面跟我爸媽談。\n我很怕氣氛又僵掉，該讓他去嗎？",
+    "intensity": 2,
+    "tags": ["story", "family", "day2"],
+    "resolutions": {
+      "approve": "他提了。我爸沒說話，倒了一杯酒推過去——算是答應了。",
+      "reject": "她攔下他，說再等等。他沒有生氣，只是那晚很安靜地牽了很久的手。",
+      "transfer": "轉去問財神：聘金的事歸他管，感情的事你自己拿主意。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "story-04",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "我們曖昧半年了，一起吃飯、一起看電影，訊息秒回，但誰都沒說破。\n上禮拜他喝多了，說了一句「其實我一直都在等妳先開口」，隔天卻裝作沒發生過。\n月老，這局到底是誰要先動？",
+    "intensity": 2,
+    "tags": ["story", "ambiguous"],
+    "resolutions": {
+      "approve": "她先開了口。他愣住兩秒，笑著說『妳終於問了』。",
+      "reject": "她決定不說了，把「等對方先開口」的心結，換成了跟朋友出去玩的週末。",
+      "transfer": "城隍爺回：這不算冤屈，是曖昧，退回去自己談。"
+    },
+    "followUp": "story-04b",
+    "source": "official"
+  },
+  {
+    "id": "story-04b",
+    "category": "love",
+    "domain": "yuelao",
+    "text": "上次那件事有了結果，我們現在算是在一起了，只是都還沒跟朋友正式介紹。\n他問我要不要把這件事說出去，我卻突然緊張了起來，怕說出口就要開始「認真」。\n月老，我該點頭嗎？",
+    "intensity": 1,
+    "tags": ["story", "ambiguous", "day2"],
+    "resolutions": {
+      "approve": "她點頭了。朋友群組裡瞬間洗出三十幾則貼圖，沒有一則是正常的。",
+      "reject": "她說再等等，兩人維持著只有彼此知道的秘密——反而覺得更甜。",
+      "transfer": "轉去問文昌帝君：交朋友這件事跟考運無關，這單退回來了。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "story-05",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "我跟他是同一屆的研究所同學，這次考試我們報了同一個職缺，只能上一個。\n我不知道該全力以赴，還是稍微讓一點，怕贏了他會不會覺得我很現實。\n月老，這種事你也管嗎？",
+    "intensity": 2,
+    "tags": ["story", "rivalry"],
+    "resolutions": {
+      "approve": "他們兩個都很拚，最後她上了，他請她吃了一頓很貴的慶祝飯，是真心的。",
+      "reject": "她放水了一點，後來知道的他很生氣——不是氣輸了，是氣她不相信他撐得住。",
+      "transfer": "文昌帝君接手：這才是我的業務範圍，感情你自己顧。"
+    },
+    "followUp": "story-05b",
+    "source": "official"
+  },
+  {
+    "id": "story-05b",
+    "category": "exam",
+    "domain": "wenchang",
+    "text": "上次那場考試結束了，兩個人的感情倒是沒有因為輸贏而變質，這點我很意外。\n只是現在換他要準備下一輪面試，天天緊張到睡不著，連我講話都愛理不理。\n月老，我該怎麼陪他走過這段？",
+    "intensity": 1,
+    "tags": ["story", "rivalry", "day2"],
+    "resolutions": {
+      "approve": "她陪他熬了兩個禮拜的夜，面試前一晚兩人一起吃了泡麵——他說吃這個比較有安全感。",
+      "reject": "她決定給他空間，自己去約了朋友聚餐，回來時他破天荒煮了一鍋薑母鴨等她。",
+      "transfer": "轉去問城隍爺：這是心理壓力不是冤屈，退回來了。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "story-06",
+    "category": "absurd",
+    "domain": "nobody",
+    "text": "月老，我想把跟前任的合照燒掉當供品，順便求你保佑我以後眼光變好。\n這樣算不算誠意十足？",
+    "intensity": 1,
+    "tags": ["story", "standalone"],
+    "resolutions": {
+      "approve": "她燒了照片，煙比預期中大，警報器響了，鄰居還跑來關心。",
+      "reject": "她把照片收進鞋盒最底層，貼了張紙條：『眼光這件事，自己練。』",
+      "transfer": "沒有神明想接這一單，照片最後還是她自己處理的。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "story-07",
+    "category": "health",
+    "domain": "yuelao",
+    "text": "他前陣子生病住院，我天天下班衝去照顧，忙到自己也快撐不住了。\n他一直說沒關係，叫我別來了，但我知道他其實很開心有人在。\n月老，我該繼續這樣拚下去嗎？",
+    "intensity": 2,
+    "tags": ["story", "standalone"],
+    "resolutions": {
+      "approve": "她繼續跑了兩個禮拜，出院那天他包了一個紅包給她，說是『辛苦費』，她哭笑不得地收下了。",
+      "reject": "她把照顧的班表排開，找了他家人輪流，自己留了一天休息——他反而覺得更安心。",
+      "transfer": "轉去問城隍爺：醫療照護不是姻緣的事，這單退回來了。"
+    },
+    "source": "official"
+  },
+  {
+    "id": "story-08",
+    "category": "money",
+    "domain": "caishen",
+    "text": "我們同居半年，AA 制分帳分到快吵架——他覺得我小氣，我覺得他花錢沒計畫。\n上次為了一台氣炸鍋，我們冷戰了三天。\n月老，感情裡的錢，到底該怎麼算才公平？",
+    "intensity": 2,
+    "tags": ["story", "standalone"],
+    "resolutions": {
+      "approve": "她提議開一個共同帳戶專付日常開銷，氣炸鍋最後兩人一起去換了台更貴的，理直氣壯。",
+      "reject": "她決定各付各的，連氣炸鍋都退了貨——省了錢，但廚房安靜了很多。",
+      "transfer": "財神接手：理財這才是我的專業，姻緣你自己顧。"
+    },
+    "source": "official"
+  }
+]

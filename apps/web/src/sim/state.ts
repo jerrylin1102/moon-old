@@ -21,6 +21,8 @@ export type WorshipperPhase =
   | 'leaving' // 離場
   | 'gone';
 
+export type WorshipperGender = 'male' | 'female';
+
 export interface Worshipper {
   id: string;
   wishId: string;
@@ -40,6 +42,12 @@ export interface Worshipper {
   facing: number;
   /** 外觀種子：身高、膚色、衣色都由它決定，同一人每帧長得一樣 */
   seed: number;
+  /** 性別：影響外觀（女性頭上有蝴蝶結）與紅線配對的愛心顏色 */
+  gender: WorshipperGender;
+  /** 紅線配對成功後的對象 id，兩人會牽手一起走出廟門 */
+  partnerId?: string;
+  /** 配對成功時算好的共同離場 x 座標（兩人走道的中點），讓兩人路徑收斂成並肩同行 */
+  exitX?: number;
 }
 
 /** 批示之後浮出來的後果文字。UI 讀它做提示條 */
@@ -95,6 +103,14 @@ export interface GameState {
   handled: number;
   ignored: number;
   matched: number;
+  /** 稀有／社群信眾的加成分數疊加值，見 sim/score.ts 的 addScoreBonus */
+  bonusScore: number;
+
+  /** 本場已生成的男／女信眾數，用來讓性別出現機率大致平衡 */
+  spawnedMale: number;
+  spawnedFemale: number;
+  /** 贊助作者的彩蛋信眾這場出現過了沒——同一場最多出現一次 */
+  supportNpcShown: boolean;
 
   worshippers: Worshipper[];
   /** 距離下一位信眾進門還有幾秒 */
@@ -175,6 +191,10 @@ export function createInitialState(mode: GameMode, difficulty: Difficulty): Game
     handled: 0,
     ignored: 0,
     matched: 0,
+    bonusScore: 0,
+    spawnedMale: 0,
+    spawnedFemale: 0,
+    supportNpcShown: false,
     worshippers: [],
     nextSpawnIn: 2,
     nextId: 1,

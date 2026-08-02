@@ -81,12 +81,20 @@ function Bubble({ id, wishId }: { id: string; wishId: string }) {
   if (!wish) return null;
   // 模式 B 的願望是多段對話，字比較多，氣泡放寬一點才不會擠成一團
   const wide = state?.mode === 'story';
+  // 稀有（AI 生成）信眾：金色外框；社群（玩家投稿）信眾：水藍色外框，一眼認出這位可以拿更高分
+  const isRare = wish.source === 'ai' || wish.tags.includes('rare');
+  const isCommunity = wish.source === 'community';
+  const borderClass = isRare
+    ? 'border-2 border-yellow-400 hover:border-yellow-300'
+    : isCommunity
+      ? 'border-2 border-sky-400 hover:border-sky-300'
+      : 'border border-temple-gold/40 hover:border-temple-gold/70';
 
   return (
     <group ref={group}>
       <Html center distanceFactor={9} zIndexRange={[20, 0]}>
         <div
-          className={`cursor-pointer rounded-lg border border-temple-gold/40 bg-black/75 px-3 py-2 text-center transition hover:border-temple-gold/70 ${wide ? 'w-64 sm:w-80' : 'w-52 sm:w-64'}`}
+          className={`cursor-pointer rounded-lg ${borderClass} bg-black/75 px-3 py-2 text-center transition ${wide ? 'w-64 sm:w-80' : 'w-52 sm:w-64'}`}
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => useInteraction.getState().focus(id)}
         >

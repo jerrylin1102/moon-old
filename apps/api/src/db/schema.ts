@@ -14,10 +14,12 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { SUBMISSION_STATUSES, WISH_CATEGORIES } from '@moon/shared';
+import { DEITY_DOMAINS, SUBMISSION_STATUSES, WISH_CATEGORIES } from '@moon/shared';
 
 export const submissionStatus = pgEnum('submission_status', SUBMISSION_STATUSES);
 export const wishCategory = pgEnum('wish_category', WISH_CATEGORIES);
+export const deityDomain = pgEnum('deity_domain', DEITY_DOMAINS);
+export const wishPoolType = pgEnum('wish_pool_type', ['official', 'story']);
 export const gameMode = pgEnum('game_mode', ['rush', 'story', 'sorting']);
 /** 玩家對一則願望做了什麼 */
 export const interactionAction = pgEnum('interaction_action', [
@@ -229,6 +231,38 @@ export const playSessions = pgTable(
   (t) => [
     index('play_sessions_leaderboard_idx').on(t.mode, t.score),
     index('play_sessions_user_idx').on(t.userId, t.createdAt),
+  ],
+);
+
+/**
+ * 官方題庫（信眾願望）。取代原本只存在 apps/web JSON 檔的做法——
+ * 資料庫是編輯的真相來源，後台可以直接 CRUD；JSON 檔降級為開發/離線 fallback 快照。
+ * `legacyId` 對應舊 JSON 裡的 `id`，讓前端既有的存檔/歷程資料不用跟著換一套 id 系統。
+ */
+export const wishBank = pgTable(
+  'wish_bank',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    legacyId: varchar('legacy_id', { length: 64 }).notNull().unique(),
+    category: wishCategory('category').notNull(),
+    domain: deityDomain('domain').notNull(),
+    text: varchar('text', { length: 140 }).notNull(),
+    /** 1-3，越高越耗月老的疲勞 */
+    intensity: smallint('intensity').notNull(),
+    tags: jsonb('tags').notNull().default(sql`'[]'::jsonb`),
+    resolutions: jsonb('resolutions').notNull(),
+    /** 模式 B 用：隔天回訪的後續願望 legacyId，沒有就是 null */
+    followUp: varchar('follow_up', { length: 64 }),
+    /** 官方一般池，或模式 B（凡人故事）專用池 */
+    poolType: wishPoolType('pool_type').notNull().default('official'),
+    /** 下架用軟開關，不做硬刪除——避免刪掉一則正在被玩家遊玩中引用的題目 */
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('wish_bank_pool_active_idx').on(t.poolType, t.active),
+    index('wish_bank_category_active_idx').on(t.category, t.active),
   ],
 );
 

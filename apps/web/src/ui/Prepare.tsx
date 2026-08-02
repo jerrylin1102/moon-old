@@ -45,8 +45,7 @@ const DIFFICULTIES: { value: Difficulty; label: string; hint: string }[] = [
 ];
 
 export function Prepare({ onLeave }: { onLeave: () => void }) {
-  const { mode, difficulty, aiRareEnabled, setMode, setDifficulty, setAiRareEnabled, setPhase } =
-    useSession();
+  const { mode, difficulty, setMode, setDifficulty, setPhase } = useSession();
   const startGame = useGame((s) => s.start);
   const [showRules, setShowRules] = useState(false);
   const [storyDay, setStoryDay] = useState(() => currentStoryDay());
@@ -137,20 +136,10 @@ export function Prepare({ onLeave }: { onLeave: () => void }) {
               </button>
             )}
             <p className="mt-2 text-[11px] leading-relaxed text-incense/40">
-              這個模式不出現 AI 稀有信眾——每天的角色是固定排好的，隨機生成會打亂回訪的故事線。
+              這個模式不出現稀有信眾——每天的角色是固定排好的，隨機生成會打亂回訪的故事線。
             </p>
           </div>
-        ) : (
-          <label className="mt-8 flex items-center gap-3 text-sm text-incense/80">
-            <input
-              type="checkbox"
-              checked={aiRareEnabled}
-              onChange={(e) => setAiRareEnabled(e.target.checked)}
-              className="h-4 w-4 accent-[var(--color-temple-gold)]"
-            />
-            讓稀有信眾出現（願望由 AI 即時生成，需要連線；關閉則只用預寫願望池）
-          </label>
-        )}
+        ) : null}
 
         <div className="mt-10 flex items-center gap-4">
           <button
